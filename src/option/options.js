@@ -28,6 +28,8 @@ class OptionsManager {
     this.setupEventListeners();
     this.restoreOptions();
     this.updateTimeSaved();
+    // Update time saved every 5 seconds
+    setInterval(() => this.updateTimeSaved(), 5000);
   }
 
   async loadKeycodes() {
@@ -38,6 +40,13 @@ class OptionsManager {
       this.populateKeySelects();
     } catch (error) {
       console.error('Failed to load keycodes:', error);
+      // Fallback to basic keycodes if file not found
+      this.keycodes = [
+        { keycode: '107,187', input: '+ or =' },
+        { keycode: '109,189', input: '- or _' },
+        { keycode: '106', input: '* (Numpad)' }
+      ];
+      this.populateKeySelects();
     }
   }
 
@@ -47,20 +56,61 @@ class OptionsManager {
     const resetSelect = document.getElementById('resetKeyInput');
 
     [fasterSelect, slowerSelect, resetSelect].forEach(select => {
-      select.innerHTML = '';
-      this.keycodes.forEach(keycode => {
-        const option = document.createElement('option');
-        option.value = keycode.keycode;
-        option.textContent = keycode.input;
-        select.appendChild(option);
-      });
+      if (select) {
+        select.innerHTML = '';
+        this.keycodes.forEach(keycode => {
+          const option = document.createElement('option');
+          option.value = keycode.keycode;
+          option.textContent = keycode.input;
+          select.appendChild(option);
+        });
+      }
     });
   }
 
   setupEventListeners() {
-    document.getElementById('save').addEventListener('click', () => this.saveOptions());
-    document.getElementById('restore').addEventListener('click', () => this.restoreDefaults());
-    document.getElementById('speedStep').addEventListener('keypress', this.validateNumberInput);
+    const saveBtn = document.getElementById('save');
+    const restoreBtn = document.getElementById('restore');
+    const speedStepInput = document.getElementById('speedStep');
+
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => this.saveOptions());
+    }
+
+    if (restoreBtn) {
+      restoreBtn.addEventListener('click', () => this.restoreDefaults());
+    }
+
+    if (speedStepInput) {
+      speedStepInput.addEventListener('keypress', this.validateNumberInput.bind(this));
+    }
+
+    // Add change listeners for radio buttons to provide instant feedback
+    const displayOptions = document.querySelectorAll('input[name="displayOption"]');
+    displayOptions.forEach(option => {
+      option.addEventListener('change', () => {
+        // Visual feedback on selection
+        document.querySelectorAll('.option-card').forEach(card => {
+          const input = card.querySelector('input[type="radio"]');
+          if (input && input.checked) {
+            card.style.borderColor = 'var(--primary-color)';
+          }
+        });
+      });
+    });
+
+    const displayPositions = document.querySelectorAll('input[name="displayPosition"]');
+    displayPositions.forEach(position => {
+      position.addEventListener('change', () => {
+        // Visual feedback on selection
+        document.querySelectorAll('.option-card').forEach(card => {
+          const input = card.querySelector('input[type="radio"]');
+          if (input && input.checked) {
+            card.style.borderColor = 'var(--primary-color)';
+          }
+        });
+      });
+    });
   }
 
   validateNumberInput(event) {
@@ -73,21 +123,42 @@ class OptionsManager {
       return;
     }
     
+    // Prevent multiple decimal points
+    if (char === '.' && currentValue.includes('.')) {
+      event.preventDefault();
+      return;
+    }
+    
     // Check if result would be valid number
-    if (!/^\d+(\.\d*)?$/.test(currentValue + char)) {
+    const newValue = currentValue + char;
+    if (!/^\d*\.?\d*$/.test(newValue)) {
       event.preventDefault();
     }
   }
 
   saveOptions() {
-    const speedStep = parseFloat(document.getElementById('speedStep').value);
-    const slowerKeyCode = document.getElementById('slowerKeyInput').value;
-    const fasterKeyCode = document.getElementById('fasterKeyInput').value;
-    const resetKeyCode = document.getElementById('resetKeyInput').value;
-    const allowMouseWheel = document.getElementById('allowMouseWheel').checked;
-    const rememberSpeed = document.getElementById('rememberSpeed').checked;
-    const hideSettingButton = document.getElementById('hideSettingButton').checked;
-    const enableAllVideosButton = document.getElementById('enableAllVideosButton').checked;
+    const speedStepInput = document.getElementById('speedStep');
+    const slowerKeyInput = document.getElementById('slowerKeyInput');
+    const fasterKeyInput = document.getElementById('fasterKeyInput');
+    const resetKeyInput = document.getElementById('resetKeyInput');
+    const allowMouseWheelInput = document.getElementById('allowMouseWheel');
+    const rememberSpeedInput = document.getElementById('rememberSpeed');
+    const hideSettingButtonInput = document.getElementById('hideSettingButton');
+    const enableAllVideosButtonInput = document.getElementById('enableAllVideosButton');
+
+    if (!speedStepInput || !slowerKeyInput || !fasterKeyInput || !resetKeyInput) {
+      console.error('Required form elements not found');
+      return;
+    }
+
+    const speedStep = parseFloat(speedStepInput.value);
+    const slowerKeyCode = slowerKeyInput.value;
+    const fasterKeyCode = fasterKeyInput.value;
+    const resetKeyCode = resetKeyInput.value;
+    const allowMouseWheel = allowMouseWheelInput ? allowMouseWheelInput.checked : true;
+    const rememberSpeed = rememberSpeedInput ? rememberSpeedInput.checked : false;
+    const hideSettingButton = hideSettingButtonInput ? hideSettingButtonInput.checked : false;
+    const enableAllVideosButton = enableAllVideosButtonInput ? enableAllVideosButtonInput.checked : true;
 
     // Get selected display option
     const displayOptions = document.getElementsByName('displayOption');
@@ -110,7 +181,14 @@ class OptionsManager {
     }
 
     // Validate speed step
-    const validSpeedStep = isNaN(speedStep) ? DEFAULT_SETTINGS.speedStep : speedStep;
+    const validSpeedStep = isNaN(speedStep) || speedStep < 0.05 || speedStep > 1 
+      ? DEFAULT_SETTINGS.speedStep 
+      : speedStep;
+
+    if (validSpeedStep !== speedStep) {
+      this.showStatus('Speed step must be between 0.05 and 1.0. Using default value.', 'info');
+      speedStepInput.value = validSpeedStep.toFixed(2);
+    }
 
     // Save to Chrome storage
     chrome.storage.sync.set({
@@ -125,20 +203,33 @@ class OptionsManager {
       hideSettingButton,
       enableAllVideosButton
     }, () => {
-      this.showStatus('Options saved successfully!', 'success');
+      if (chrome.runtime.lastError) {
+        this.showStatus('Error saving settings: ' + chrome.runtime.lastError.message, 'danger');
+      } else {
+        this.showStatus('✓ Settings saved successfully!', 'success');
+      }
     });
   }
 
   restoreOptions() {
     chrome.storage.sync.get(DEFAULT_SETTINGS, (items) => {
-      document.getElementById('speedStep').value = items.speedStep.toFixed(2);
-      document.getElementById('slowerKeyInput').value = items.slowerKeyCode;
-      document.getElementById('fasterKeyInput').value = items.fasterKeyCode;
-      document.getElementById('resetKeyInput').value = items.resetKeyCode;
-      document.getElementById('allowMouseWheel').checked = items.allowMouseWheel;
-      document.getElementById('rememberSpeed').checked = items.rememberSpeed;
-      document.getElementById('hideSettingButton').checked = items.hideSettingButton;
-      document.getElementById('enableAllVideosButton').checked = items.enableAllVideosButton;
+      const speedStepInput = document.getElementById('speedStep');
+      const slowerKeyInput = document.getElementById('slowerKeyInput');
+      const fasterKeyInput = document.getElementById('fasterKeyInput');
+      const resetKeyInput = document.getElementById('resetKeyInput');
+      const allowMouseWheelInput = document.getElementById('allowMouseWheel');
+      const rememberSpeedInput = document.getElementById('rememberSpeed');
+      const hideSettingButtonInput = document.getElementById('hideSettingButton');
+      const enableAllVideosButtonInput = document.getElementById('enableAllVideosButton');
+
+      if (speedStepInput) speedStepInput.value = items.speedStep.toFixed(2);
+      if (slowerKeyInput) slowerKeyInput.value = items.slowerKeyCode;
+      if (fasterKeyInput) fasterKeyInput.value = items.fasterKeyCode;
+      if (resetKeyInput) resetKeyInput.value = items.resetKeyCode;
+      if (allowMouseWheelInput) allowMouseWheelInput.checked = items.allowMouseWheel;
+      if (rememberSpeedInput) rememberSpeedInput.checked = items.rememberSpeed;
+      if (hideSettingButtonInput) hideSettingButtonInput.checked = items.hideSettingButton;
+      if (enableAllVideosButtonInput) enableAllVideosButtonInput.checked = items.enableAllVideosButton;
 
       // Restore display option
       const displayOption = document.getElementById(items.displayOption);
@@ -155,36 +246,47 @@ class OptionsManager {
   }
 
   restoreDefaults() {
-    chrome.storage.sync.set(DEFAULT_SETTINGS, () => {
-      this.restoreOptions();
-      this.showStatus('Default options restored!', 'info');
-    });
+    if (confirm('Are you sure you want to reset all settings to default values? This action cannot be undone.')) {
+      chrome.storage.sync.set(DEFAULT_SETTINGS, () => {
+        this.restoreOptions();
+        this.showStatus('✓ Default settings restored!', 'info');
+      });
+    }
   }
 
   updateTimeSaved() {
     chrome.storage.sync.get({ secSaved: 0 }, (items) => {
       const timeString = this.formatTimeSaved(items.secSaved);
-      document.getElementById('totalSavedTime').textContent = `You have saved ${timeString}`;
+      const timeSavedElement = document.getElementById('totalSavedTime');
+      if (timeSavedElement) {
+        timeSavedElement.textContent = timeString;
+      }
     });
   }
 
   formatTimeSaved(seconds) {
+    if (seconds === 0) {
+      return 'No time saved yet. Start watching videos!';
+    }
+
     const days = Math.floor(seconds / (60 * 60 * 24));
     const hours = Math.floor((seconds % (60 * 60 * 24)) / (60 * 60));
     const minutes = Math.floor((seconds % (60 * 60)) / 60);
-    const secs = Math.round((seconds % 60) * 100) / 100;
+    const secs = Math.floor(seconds % 60);
 
     let result = '';
     if (days > 0) result += `${days} Day${days !== 1 ? 's' : ''} `;
-    if (hours > 0 || days > 0) result += `${String(hours).padStart(2, '0')} Hour${hours !== 1 ? 's' : ''} `;
-    if (minutes > 0 || hours > 0 || days > 0) result += `${String(minutes).padStart(2, '0')} Minute${minutes !== 1 ? 's' : ''} `;
-    result += `${String(secs).padStart(2, '0')} Second${secs !== 1 ? 's' : ''}`;
+    if (hours > 0 || days > 0) result += `${hours} Hour${hours !== 1 ? 's' : ''} `;
+    if (minutes > 0 || hours > 0 || days > 0) result += `${minutes} Minute${minutes !== 1 ? 's' : ''} `;
+    if (days === 0 && hours === 0) result += `${secs} Second${secs !== 1 ? 's' : ''}`;
 
-    return result.trim();
+    return result.trim() || '0 Seconds';
   }
 
   showStatus(message, type = 'success') {
     const statusElement = document.getElementById('status');
+    if (!statusElement) return;
+
     statusElement.textContent = message;
     statusElement.className = `alert alert-${type}`;
     statusElement.style.display = 'block';
@@ -192,8 +294,8 @@ class OptionsManager {
     setTimeout(() => {
       statusElement.style.display = 'none';
       statusElement.textContent = '';
-      statusElement.className = '';
-    }, 3000);
+      statusElement.className = 'alert';
+    }, 4000);
   }
 }
 

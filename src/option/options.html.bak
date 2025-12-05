@@ -327,9 +327,17 @@
 			cursor: pointer;
 		}
 
+		.option-card input[type="radio"]:checked ~ .option-content {
+			color: var(--primary-color);
+		}
+
 		.option-card input[type="radio"]:checked {
 			background-color: var(--primary-color);
 			border-color: var(--primary-color);
+		}
+
+		.option-card input[type="radio"]:checked + .option-content {
+			color: var(--primary-color);
 		}
 
 		.option-card:has(input[type="radio"]:checked) {
@@ -989,6 +997,410 @@
 
 		</div>
 	</div>
+
+	<!-- Bootstrap JS from CDN -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+	<!-- Options Script -->
+	<script src="options.js"></script>
+</body>
+</html>
+					<div class="welcome-card">
+						<h2 class="h3 fw-bold text-primary mb-3">
+							<i class="bi bi-rocket-takeoff-fill"></i> Welcome aboard!
+						</h2>
+						<p class="lead mb-0">Control video playback speed like a pro with keyboard shortcuts and intuitive controls.</p>
+					</div>
+
+					<div class="settings-section">
+						<div class="section-header">
+							<div class="section-icon">
+								<i class="bi bi-keyboard-fill"></i>
+							</div>
+							<h3 class="section-title">Default Keyboard Shortcuts</h3>
+						</div>
+						
+						<ul class="feature-list">
+							<li>
+								<div class="feature-icon"><i class="bi bi-plus-lg"></i></div>
+								<div>
+									<kbd>+</kbd> or <kbd>=</kbd> <strong>Increase playback speed</strong>
+								</div>
+							</li>
+							<li>
+								<div class="feature-icon"><i class="bi bi-dash-lg"></i></div>
+								<div>
+									<kbd>-</kbd> or <kbd>_</kbd> <strong>Decrease playback speed</strong>
+								</div>
+							</li>
+							<li>
+								<div class="feature-icon"><i class="bi bi-arrow-repeat"></i></div>
+								<div>
+									<kbd>*</kbd> (Numpad) <strong>Reset to 1x speed</strong>
+								</div>
+							</li>
+							<li>
+								<div class="feature-icon"><i class="bi bi-mouse-fill"></i></div>
+								<div>
+									<kbd>Shift</kbd> + <kbd>Mouse Wheel</kbd> <strong>Adjust with scroll</strong>
+								</div>
+							</li>
+						</ul>
+					</div>
+
+					<div class="settings-section">
+						<div class="section-header">
+							<div class="section-icon">
+								<i class="bi bi-display-fill"></i>
+							</div>
+							<h3 class="section-title">On-Screen Controls</h3>
+						</div>
+						
+						<p class="mb-3">A sleek control panel appears on your videos featuring:</p>
+						<div class="row g-3">
+							<div class="col-md-3">
+								<div class="text-center p-3 bg-light rounded">
+									<div class="h2 text-primary mb-2">&gt;&gt;</div>
+									<small class="fw-bold">Speed Up</small>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="text-center p-3 bg-light rounded">
+									<div class="h2 text-primary mb-2">1.25x</div>
+									<small class="fw-bold">Current Speed</small>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="text-center p-3 bg-light rounded">
+									<div class="h2 text-primary mb-2">&lt;&lt;</div>
+									<small class="fw-bold">Slow Down</small>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="text-center p-3 bg-light rounded">
+									<div class="h2 text-primary mb-2"><i class="bi bi-gear-fill"></i></div>
+									<small class="fw-bold">Settings</small>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="tip-box">
+						<strong><i class="bi bi-lightbulb-fill"></i> Pro Tip:</strong> Head over to the <strong>Settings</strong> tab to customize keyboard shortcuts, speed increments, display options, and more!
+					</div>
+				</div>
+
+				<!-- Settings Tab -->
+				<div class="tab-pane fade" id="settings" role="tabpanel">
+					
+					<!-- Keyboard Controls -->
+					<div class="settings-section">
+						<div class="section-header">
+							<div class="section-icon">
+								<i class="bi bi-keyboard-fill"></i>
+							</div>
+							<h3 class="section-title">Keyboard Shortcuts</h3>
+						</div>
+						<div class="row g-3">
+							<div class="col-md-4">
+								<label for="slowerKeyInput" class="form-label">
+									<i class="bi bi-dash-circle-fill text-danger"></i> Decrease Speed
+								</label>
+								<select id="slowerKeyInput" class="form-select"></select>
+							</div>
+							<div class="col-md-4">
+								<label for="fasterKeyInput" class="form-label">
+									<i class="bi bi-plus-circle-fill text-success"></i> Increase Speed
+								</label>
+								<select id="fasterKeyInput" class="form-select"></select>
+							</div>
+							<div class="col-md-4">
+								<label for="resetKeyInput" class="form-label">
+									<i class="bi bi-arrow-repeat text-primary"></i> Reset Speed
+								</label>
+								<select id="resetKeyInput" class="form-select"></select>
+							</div>
+						</div>
+					</div>
+
+					<!-- Speed Settings -->
+					<div class="settings-section">
+						<div class="section-header">
+							<div class="section-icon">
+								<i class="bi bi-speedometer"></i>
+							</div>
+							<h3 class="section-title">Speed Configuration</h3>
+						</div>
+						<div class="row g-3">
+							<div class="col-md-6">
+								<label for="speedStep" class="form-label">
+									<i class="bi bi-lightning-fill text-warning"></i> Speed Change Step
+								</label>
+								<input id="speedStep" type="number" step="0.05" min="0.05" max="1" class="form-control" placeholder="0.25"/>
+								<small class="text-muted d-block mt-2">
+									<i class="bi bi-info-circle"></i> Amount of speed change per keypress (0.05 to 1.0)
+								</small>
+							</div>
+						</div>
+					</div>
+
+					<!-- General Options -->
+					<div class="settings-section">
+						<div class="section-header">
+							<div class="section-icon">
+								<i class="bi bi-toggles2"></i>
+							</div>
+							<h3 class="section-title">General Options</h3>
+						</div>
+						<div class="row g-3">
+							<div class="col-md-6">
+								<div class="form-check form-switch">
+									<input class="form-check-input" type="checkbox" id="allowMouseWheel">
+									<label class="form-check-label" for="allowMouseWheel">
+										<i class="bi bi-mouse2-fill"></i> Enable Shift + Mouse Wheel control
+									</label>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-check form-switch">
+									<input class="form-check-input" type="checkbox" id="rememberSpeed">
+									<label class="form-check-label" for="rememberSpeed">
+										<i class="bi bi-bookmark-fill"></i> Remember speed across videos
+									</label>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-check form-switch">
+									<input class="form-check-input" type="checkbox" id="hideSettingButton">
+									<label class="form-check-label" for="hideSettingButton">
+										<i class="bi bi-eye-slash-fill"></i> Hide settings button on player
+									</label>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-check form-switch">
+									<input class="form-check-input" type="checkbox" id="enableAllVideosButton">
+									<label class="form-check-label" for="enableAllVideosButton">
+										<i class="bi bi-play-btn-fill"></i> Enable for all HTML5 videos
+										<span class="badge bg-warning text-dark ms-2">BETA</span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Display Options -->
+					<div class="settings-section">
+						<div class="section-header">
+							<div class="section-icon">
+								<i class="bi bi-eye-fill"></i>
+							</div>
+							<h3 class="section-title">Control Panel Display</h3>
+						</div>
+						<p class="text-muted mb-3">Choose how the control panel appears on videos</p>
+						<div class="row g-3">
+							<div class="col-6 col-lg-3">
+								<label class="option-card">
+									<input class="form-check-input" type="radio" name="displayOption" id="Always" value="Always">
+									<div class="option-content">
+										<div class="option-title">Always Visible</div>
+										<div class="option-desc">Panel always shown</div>
+									</div>
+								</label>
+							</div>
+							<div class="col-6 col-lg-3">
+								<label class="option-card">
+									<input class="form-check-input" type="radio" name="displayOption" id="FadeInFadeOut" value="FadeInFadeOut" checked>
+									<div class="option-content">
+										<div class="option-title">Auto Hide</div>
+										<div class="option-desc">Show on hover</div>
+									</div>
+								</label>
+							</div>
+							<div class="col-6 col-lg-3">
+								<label class="option-card">
+									<input class="form-check-input" type="radio" name="displayOption" id="Simple" value="Simple">
+									<div class="option-content">
+										<div class="option-title">Minimal</div>
+										<div class="option-desc">Speed only</div>
+									</div>
+								</label>
+							</div>
+							<div class="col-6 col-lg-3">
+								<label class="option-card">
+									<input class="form-check-input" type="radio" name="displayOption" id="None" value="None">
+									<div class="option-content">
+										<div class="option-title">Hidden</div>
+										<div class="option-desc">No panel</div>
+									</div>
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<!-- Display Position -->
+					<div class="settings-section">
+						<div class="section-header">
+							<div class="section-icon">
+								<i class="bi bi-pin-map-fill"></i>
+							</div>
+							<h3 class="section-title">Panel Position</h3>
+						</div>
+						<p class="text-muted mb-3">Choose where the control panel appears on video</p>
+						<div class="row g-3">
+							<div class="col-6 col-md-4 col-lg-2">
+								<label class="option-card">
+									<input class="form-check-input" type="radio" name="displayPosition" id="TopLeft" value="TopLeft">
+									<div class="option-content">
+										<div class="option-title">Top Left</div>
+									</div>
+								</label>
+							</div>
+							<div class="col-6 col-md-4 col-lg-2">
+								<label class="option-card">
+									<input class="form-check-input" type="radio" name="displayPosition" id="TopCenter" value="TopCenter">
+									<div class="option-content">
+										<div class="option-title">Top Center</div>
+									</div>
+								</label>
+							</div>
+							<div class="col-6 col-md-4 col-lg-2">
+								<label class="option-card">
+									<input class="form-check-input" type="radio" name="displayPosition" id="TopRight" value="TopRight" checked>
+									<div class="option-content">
+										<div class="option-title">Top Right</div>
+									</div>
+								</label>
+							</div>
+							<div class="col-6 col-md-4 col-lg-2">
+								<label class="option-card">
+									<input class="form-check-input" type="radio" name="displayPosition" id="BottomLeft" value="BottomLeft">
+									<div class="option-content">
+										<div class="option-title">Bottom Left</div>
+									</div>
+								</label>
+							</div>
+							<div class="col-6 col-md-4 col-lg-2">
+								<label class="option-card">
+									<input class="form-check-input" type="radio" name="displayPosition" id="BottomCenter" value="BottomCenter">
+									<div class="option-content">
+										<div class="option-title">Bottom Center</div>
+									</div>
+								</label>
+							</div>
+							<div class="col-6 col-md-4 col-lg-2">
+								<label class="option-card">
+									<input class="form-check-input" type="radio" name="displayPosition" id="BottomRight" value="BottomRight">
+									<div class="option-content">
+										<div class="option-title">Bottom Right</div>
+									</div>
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<!-- Action Buttons -->
+					<div class="text-center mt-4">
+						<div id="status" class="alert mb-4"></div>
+						<button id="save" class="btn-action btn-save me-3">
+							<i class="bi bi-check2-circle"></i> Save Settings
+						</button>
+						<button id="restore" class="btn-action btn-reset">
+							<i class="bi bi-arrow-clockwise"></i> Reset to Defaults
+						</button>
+					</div>
+				</div>
+
+				<!-- About Tab -->
+				<div class="tab-pane fade" id="about" role="tabpanel">
+					<div class="settings-section">
+						<div class="section-header">
+							<div class="section-icon">
+								<i class="bi bi-info-circle-fill"></i>
+							</div>
+							<h3 class="section-title">About This Extension</h3>
+						</div>
+
+						<div class="about-stats">
+							<div class="stat-card">
+								<i class="bi bi-star-fill stat-number"></i>
+								<span class="stat-label">v1.0.0</span>
+							</div>
+							<div class="stat-card">
+								<i class="bi bi-shield-check stat-number"></i>
+								<span class="stat-label">MIT License</span>
+							</div>
+							<div class="stat-card">
+								<i class="bi bi-code-slash stat-number"></i>
+								<span class="stat-label">Open Source</span>
+							</div>
+						</div>
+						
+						<h4 class="mt-4 mb-3 fw-bold"><i class="bi bi-star-fill text-warning"></i> Key Features</h4>
+						<ul class="feature-list">
+							<li>
+								<div class="feature-icon"><i class="bi bi-keyboard"></i></div>
+								<div>Customizable keyboard shortcuts for instant speed control</div>
+							</li>
+							<li>
+								<div class="feature-icon"><i class="bi bi-mouse"></i></div>
+								<div>Mouse wheel support with Shift modifier key</div>
+							</li>
+							<li>
+								<div class="feature-icon"><i class="bi bi-youtube"></i></div>
+								<div>Works seamlessly on YouTube and embedded videos</div>
+							</li>
+							<li>
+								<div class="feature-icon"><i class="bi bi-play-circle"></i></div>
+								<div>Compatible with all HTML5 video players</div>
+							</li>
+							<li>
+								<div class="feature-icon"><i class="bi bi-palette"></i></div>
+								<div>Multiple display modes and customizable positions</div>
+							</li>
+							<li>
+								<div class="feature-icon"><i class="bi bi-clock-history"></i></div>
+								<div>Tracks time saved from watching at higher speeds</div>
+							</li>
+						</ul>
+
+						<h4 class="mt-4 mb-3 fw-bold"><i class="bi bi-check-circle-fill text-success"></i> Browser Compatibility</h4>
+						<div class="row g-3">
+							<div class="col-md-4">
+								<div class="p-3 bg-light rounded text-center">
+									<i class="bi bi-browser-chrome display-4 text-primary"></i>
+									<p class="mt-2 mb-0 fw-bold">Chrome 88+</p>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="p-3 bg-light rounded text-center">
+									<i class="bi bi-browser-edge display-4 text-info"></i>
+									<p class="mt-2 mb-0 fw-bold">Edge 88+</p>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="p-3 bg-light rounded text-center">
+									<i class="bi bi-globe display-4 text-success"></i>
+									<p class="mt-2 mb-0 fw-bold">Chromium-based</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="welcome-card mt-4">
+							<h5 class="fw-bold text-success mb-2">
+								<i class="bi bi-heart-fill"></i> Thank You!
+							</h5>
+							<p class="mb-0">Thank you for using YouTube Playback Speed Control! We hope this extension makes your video watching experience more efficient and enjoyable.</p>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- jQuery from CDN -->
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
 	<!-- Bootstrap JS from CDN -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
