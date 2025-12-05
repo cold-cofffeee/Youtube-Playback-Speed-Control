@@ -1,0 +1,42 @@
+{
+   "manifest_version": 3,
+   "name": "YouTube Playback Speed Control",
+   "version": "1.0.0",
+   "description": "Control YouTube and HTML5 video playback speed with keyboard shortcuts. Press '+' to increase, '-' to decrease, and '*' to reset playback speed.",
+   
+   "icons": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+   },
+   
+   "action": {
+      "default_icon": {
+         "19": "icons/icon19.png"
+      },
+      "default_title": "YouTube Playback Speed Control - Click to open settings"
+   },
+   
+   "background": {
+      "service_worker": "src/background.js"
+   },
+   
+   "content_scripts": [
+      {
+         "matches": ["http://*/*", "https://*/*"],
+         "js": ["src/inject/inject.js"],
+         "css": ["css/inject.css"],
+         "run_at": "document_end",
+         "all_frames": true
+      }
+   ],
+   
+   "permissions": [
+      "storage"
+   ],
+   
+   "options_page": "src/option/options.html",
+   
+   "author": "Your Name",
+   "homepage_url": "https://github.com/yourusername/youtube-playback-speed-control"
+}
