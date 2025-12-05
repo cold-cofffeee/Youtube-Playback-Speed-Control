@@ -739,6 +739,30 @@
 				margin-bottom: 12px;
 			}
 		}
+
+		/* Control Items Display */
+		.control-items {
+			list-style: none;
+			padding: 0;
+			margin: 20px 0;
+		}
+
+		.control-items li {
+			padding: 10px 0;
+			font-size: 0.95rem;
+			color: var(--text-primary);
+			line-height: 1.6;
+		}
+
+		.control-items li strong {
+			font-weight: 600;
+		}
+
+		.control-label {
+			color: var(--text-secondary);
+			font-size: 0.9rem;
+			margin-bottom: 4px;
+		}
 	</style>
 </head>
 <body>
@@ -759,25 +783,6 @@
 				<p id="totalSavedTime">Loading...</p>
 			</div>
 		</div>
-
-		<!-- Navigation Tabs -->
-		<ul class="nav nav-tabs" id="mainTab" role="tablist">
-			<li class="nav-item" role="presentation">
-				<button class="nav-link active" id="HomeTab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab">
-					<i class="bi bi-house-door-fill"></i> Getting Started
-				</button>
-			</li>
-			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="SettingsTab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab">
-					<i class="bi bi-gear-fill"></i> Settings
-				</button>
-			</li>
-			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="AboutTab" data-bs-toggle="tab" data-bs-target="#about" type="button" role="tab">
-					<i class="bi bi-info-circle-fill"></i> About
-				</button>
-			</li>
-		</ul>
 
 		<!-- Tab Content -->
 		<div class="tab-content" id="mainTabContent">
@@ -836,32 +841,12 @@
 					</div>
 					
 					<p class="mb-3">A sleek control panel appears on your videos featuring:</p>
-					<div class="row g-3">
-						<div class="col-6 col-md-3">
-							<div class="text-center p-3 bg-light rounded-3">
-								<div class="h2 text-primary mb-2">&gt;&gt;</div>
-								<small class="fw-bold">Speed Up</small>
-							</div>
-						</div>
-						<div class="col-6 col-md-3">
-							<div class="text-center p-3 bg-light rounded-3">
-								<div class="h2 text-primary mb-2">1.25x</div>
-								<small class="fw-bold">Current Speed</small>
-							</div>
-						</div>
-						<div class="col-6 col-md-3">
-							<div class="text-center p-3 bg-light rounded-3">
-								<div class="h2 text-primary mb-2">&lt;&lt;</div>
-								<small class="fw-bold">Slow Down</small>
-							</div>
-						</div>
-						<div class="col-6 col-md-3">
-							<div class="text-center p-3 bg-light rounded-3">
-								<div class="h2 text-primary mb-2"><i class="bi bi-gear-fill"></i></div>
-								<small class="fw-bold">Settings</small>
-							</div>
-						</div>
-					</div>
+					<ul class="control-items">
+						<li>&gt;&gt;<br><span class="control-label">Speed Up</span></li>
+						<li><strong>1.25x</strong><br><span class="control-label">Current Speed</span></li>
+						<li>&lt;&lt;<br><span class="control-label">Slow Down</span></li>
+						<li><i class="bi bi-gear-fill"></i><br><span class="control-label">Settings</span></li>
+					</ul>
 				</div>
 
 				<div class="tip-box">
@@ -928,42 +913,49 @@
 
 				<!-- General Options -->
 				<div class="settings-section">
-					<div class="section-header">
-						<div class="section-icon">
+					<div class="section-header" style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); padding: 20px; border-radius: 12px; border: none; margin-bottom: 20px;">
+						<div class="section-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 56px; height: 56px; font-size: 1.6rem;">
 							<i class="bi bi-toggles2"></i>
 						</div>
-						<h3 class="section-title">General Options</h3>
+						<div>
+							<h3 class="section-title" style="margin-bottom: 4px;">General Options</h3>
+							<p style="margin: 0; color: #718096; font-size: 0.9rem;">Customize your playback experience</p>
+						</div>
 					</div>
 					<div class="row g-3">
 						<div class="col-md-6">
-							<div class="form-check form-switch">
-								<input class="form-check-input" type="checkbox" id="allowMouseWheel">
-								<label class="form-check-label" for="allowMouseWheel">
-									<i class="bi bi-mouse2-fill"></i> Enable Shift + Mouse Wheel control
+							<div class="form-check form-switch" style="background: #f8f9fa; padding: 18px 20px; border-radius: 12px; border: 2px solid #e9ecef; transition: all 0.3s ease;" onmouseover="this.style.borderColor='#667eea'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.15)'" onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+								<input class="form-check-input" type="checkbox" id="allowMouseWheel" style="width: 48px; height: 24px; cursor: pointer;">
+								<label class="form-check-label" for="allowMouseWheel" style="cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 10px; margin-left: 10px;">
+									<i class="bi bi-mouse2-fill" style="font-size: 1.2rem; color: #667eea;"></i>
+									<span>Enable Shift + Mouse Wheel control</span>
 								</label>
 							</div>
 						</div>
 						<div class="col-md-6">
-							<div class="form-check form-switch">
-								<input class="form-check-input" type="checkbox" id="rememberSpeed">
-								<label class="form-check-label" for="rememberSpeed">
-									<i class="bi bi-bookmark-fill"></i> Remember speed across videos
+							<div class="form-check form-switch" style="background: #f8f9fa; padding: 18px 20px; border-radius: 12px; border: 2px solid #e9ecef; transition: all 0.3s ease;" onmouseover="this.style.borderColor='#667eea'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.15)'" onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+								<input class="form-check-input" type="checkbox" id="rememberSpeed" style="width: 48px; height: 24px; cursor: pointer;">
+								<label class="form-check-label" for="rememberSpeed" style="cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 10px; margin-left: 10px;">
+									<i class="bi bi-bookmark-fill" style="font-size: 1.2rem; color: #667eea;"></i>
+									<span>Remember speed across videos</span>
 								</label>
 							</div>
 						</div>
 						<div class="col-md-6">
-							<div class="form-check form-switch">
-								<input class="form-check-input" type="checkbox" id="hideSettingButton">
-								<label class="form-check-label" for="hideSettingButton">
-									<i class="bi bi-eye-slash-fill"></i> Hide settings button on player
+							<div class="form-check form-switch" style="background: #f8f9fa; padding: 18px 20px; border-radius: 12px; border: 2px solid #e9ecef; transition: all 0.3s ease;" onmouseover="this.style.borderColor='#667eea'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.15)'" onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+								<input class="form-check-input" type="checkbox" id="hideSettingButton" style="width: 48px; height: 24px; cursor: pointer;">
+								<label class="form-check-label" for="hideSettingButton" style="cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 10px; margin-left: 10px;">
+									<i class="bi bi-eye-slash-fill" style="font-size: 1.2rem; color: #667eea;"></i>
+									<span>Hide settings button on player</span>
 								</label>
 							</div>
 						</div>
 						<div class="col-md-6">
-							<div class="form-check form-switch">
-								<input class="form-check-input" type="checkbox" id="enableAllVideosButton">
-								<label class="form-check-label" for="enableAllVideosButton">
-									<i class="bi bi-play-btn-fill"></i> Enable for all HTML5 videos
+							<div class="form-check form-switch" style="background: #f8f9fa; padding: 18px 20px; border-radius: 12px; border: 2px solid #e9ecef; transition: all 0.3s ease;" onmouseover="this.style.borderColor='#667eea'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.15)'" onmouseout="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'">
+								<input class="form-check-input" type="checkbox" id="enableAllVideosButton" style="width: 48px; height: 24px; cursor: pointer;">
+								<label class="form-check-label" for="enableAllVideosButton" style="cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 10px; margin-left: 10px;">
+									<i class="bi bi-play-btn-fill" style="font-size: 1.2rem; color: #667eea;"></i>
+									<span>Enable for all HTML5 videos</span>
 									<span class="badge bg-warning text-dark ms-2">BETA</span>
 								</label>
 							</div>
@@ -1145,24 +1137,35 @@
 						</li>
 					</ul>
 
-					<h4 class="mt-4 mb-3 fw-bold"><i class="bi bi-check-circle-fill text-success"></i> Browser Compatibility</h4>
-					<div class="row g-3">
-						<div class="col-md-4">
-							<div class="p-3 bg-light rounded-3 text-center">
-								<i class="bi bi-browser-chrome display-4 text-primary"></i>
-								<p class="mt-2 mb-0 fw-bold">Chrome 88+</p>
+					<div style="background: linear-gradient(135deg, #2dce8915 0%, #26d0ce15 100%); padding: 24px; border-radius: 16px; margin-top: 30px;">
+						<h4 class="mb-4 fw-bold" style="color: #2d3748; display: flex; align-items: center; gap: 10px;">
+							<i class="bi bi-check-circle-fill" style="color: #2dce89; font-size: 1.5rem;"></i>
+							Browser Compatibility
+						</h4>
+						<div class="row g-3">
+							<div class="col-md-4">
+								<div style="background: white; padding: 24px; border-radius: 12px; text-align: center; border: 2px solid #e2e8f0; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 24px rgba(102, 126, 234, 0.2)'; this.style.borderColor='#667eea'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)'; this.style.borderColor='#e2e8f0'">
+									<div style="width: 64px; height: 64px; margin: 0 auto 16px; background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);">
+										<i class="bi bi-browser-chrome" style="font-size: 2rem; color: white;"></i>
+									</div>
+									<p class="mb-0 fw-bold" style="font-size: 1.1rem; color: #2d3748;">Chrome 88+</p>
+								</div>
 							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="p-3 bg-light rounded-3 text-center">
-								<i class="bi bi-browser-edge display-4 text-info"></i>
-								<p class="mt-2 mb-0 fw-bold">Edge 88+</p>
+							<div class="col-md-4">
+								<div style="background: white; padding: 24px; border-radius: 12px; text-align: center; border: 2px solid #e2e8f0; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 24px rgba(102, 126, 234, 0.2)'; this.style.borderColor='#667eea'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)'; this.style.borderColor='#e2e8f0'">
+									<div style="width: 64px; height: 64px; margin: 0 auto 16px; background: linear-gradient(135deg, #0078d4 0%, #00639e 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0, 120, 212, 0.3);">
+										<i class="bi bi-browser-edge" style="font-size: 2rem; color: white;"></i>
+									</div>
+									<p class="mb-0 fw-bold" style="font-size: 1.1rem; color: #2d3748;">Edge 88+</p>
+								</div>
 							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="p-3 bg-light rounded-3 text-center">
-								<i class="bi bi-globe display-4 text-success"></i>
-								<p class="mt-2 mb-0 fw-bold">Chromium-based</p>
+							<div class="col-md-4">
+								<div style="background: white; padding: 24px; border-radius: 12px; text-align: center; border: 2px solid #e2e8f0; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 24px rgba(102, 126, 234, 0.2)'; this.style.borderColor='#667eea'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)'; this.style.borderColor='#e2e8f0'">
+									<div style="width: 64px; height: 64px; margin: 0 auto 16px; background: linear-gradient(135deg, #2dce89 0%, #26d0ce 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(45, 206, 137, 0.3);">
+										<i class="bi bi-globe" style="font-size: 2rem; color: white;"></i>
+									</div>
+									<p class="mb-0 fw-bold" style="font-size: 1.1rem; color: #2d3748;">Chromium-based</p>
+								</div>
 							</div>
 						</div>
 					</div>
