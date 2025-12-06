@@ -14,6 +14,9 @@ const DEFAULT_SETTINGS = {
   rememberSpeed: false,
   hideSettingButton: false,
   enableAllVideosButton: true,
+  autoSkipIntros: false,
+  forceSpeedAllVideos: false,
+  debugLogging: false,
   secSaved: 0
 };
 
@@ -61,6 +64,11 @@ class OptionsManager {
     document.getElementById('save').addEventListener('click', () => this.saveOptions());
     document.getElementById('restore').addEventListener('click', () => this.restoreDefaults());
     document.getElementById('speedStep').addEventListener('keypress', this.validateNumberInput);
+    
+    // Advanced tab event listeners
+    document.getElementById('clearWebsiteData').addEventListener('click', () => this.clearWebsiteData());
+    document.getElementById('exportConfig').addEventListener('click', () => this.exportConfiguration());
+    document.getElementById('importConfig').addEventListener('click', () => this.importConfiguration());
   }
 
   validateNumberInput(event) {
@@ -88,6 +96,9 @@ class OptionsManager {
     const rememberSpeed = document.getElementById('rememberSpeed').checked;
     const hideSettingButton = document.getElementById('hideSettingButton').checked;
     const enableAllVideosButton = document.getElementById('enableAllVideosButton').checked;
+    const autoSkipIntros = document.getElementById('autoSkipIntros').checked;
+    const forceSpeedAllVideos = document.getElementById('forceSpeedAllVideos').checked;
+    const debugLogging = document.getElementById('debugLogging').checked;
 
     // Get selected display option
     const displayOptions = document.getElementsByName('displayOption');
@@ -123,7 +134,10 @@ class OptionsManager {
       allowMouseWheel,
       rememberSpeed,
       hideSettingButton,
-      enableAllVideosButton
+      enableAllVideosButton,
+      autoSkipIntros,
+      forceSpeedAllVideos,
+      debugLogging
     }, () => {
       this.showStatus('Options saved successfully!', 'success');
     });
@@ -139,6 +153,9 @@ class OptionsManager {
       document.getElementById('rememberSpeed').checked = items.rememberSpeed;
       document.getElementById('hideSettingButton').checked = items.hideSettingButton;
       document.getElementById('enableAllVideosButton').checked = items.enableAllVideosButton;
+      document.getElementById('autoSkipIntros').checked = items.autoSkipIntros;
+      document.getElementById('forceSpeedAllVideos').checked = items.forceSpeedAllVideos;
+      document.getElementById('debugLogging').checked = items.debugLogging;
 
       // Restore display option
       const displayOption = document.getElementById(items.displayOption);
@@ -161,13 +178,6 @@ class OptionsManager {
     });
   }
 
-  updateTimeSaved() {
-    chrome.storage.sync.get({ secSaved: 0 }, (items) => {
-      const timeString = this.formatTimeSaved(items.secSaved);
-      document.getElementById('totalSavedTime').textContent = `You have saved ${timeString}`;
-    });
-  }
-
   formatTimeSaved(seconds) {
     const days = Math.floor(seconds / (60 * 60 * 24));
     const hours = Math.floor((seconds % (60 * 60 * 24)) / (60 * 60));
@@ -185,15 +195,87 @@ class OptionsManager {
 
   showStatus(message, type = 'success') {
     const statusElement = document.getElementById('status');
-    statusElement.textContent = message;
-    statusElement.className = `alert alert-${type}`;
-    statusElement.style.display = 'block';
+    const statusText = document.getElementById('statusText');
+    
+    statusText.textContent = message;
+    
+    // Set colors based on type
+    if (type === 'success') {
+      statusElement.className = 'fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg transition-all duration-300 bg-green-500 text-white';
+    } else if (type === 'error') {
+      statusElement.className = 'fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg transition-all duration-300 bg-red-500 text-white';
+    } else {
+      statusElement.className = 'fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg transition-all duration-300 bg-blue-500 text-white';
+    }
+    
+    // Show toast
+    statusElement.style.transform = 'translateY(0)';
+    statusElement.style.opacity = '1';
 
     setTimeout(() => {
-      statusElement.style.display = 'none';
-      statusElement.textContent = '';
-      statusElement.className = '';
+      statusElement.style.transform = 'translateY(5rem)';
+      statusElement.style.opacity = '0';
     }, 3000);
+  }
+
+  updateTimeSaved() {
+    chrome.storage.sync.get({ secSaved: 0 }, (items) => {
+      const seconds = items.secSaved;
+      if (seconds > 0) {
+        const timeString = this.formatTimeSaved(seconds);
+        document.getElementById('totalSavedTime').textContent = `Time saved by speeding up videos: ${timeString}`;
+        document.getElementById('timeSavedSection').style.display = 'block';
+      }
+    });
+  }
+
+  clearWebsiteData() {
+    if (confirm('Are you sure you want to clear all per-website speed settings? This action cannot be undone.')) {
+      chrome.storage.local.clear(() => {
+        this.showStatus('Website speed data cleared successfully!', 'success');
+      });
+    }
+  }
+
+  exportConfiguration() {
+    chrome.storage.sync.get(null, (items) => {
+      const config = JSON.stringify(items, null, 2);
+      const blob = new Blob([config], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `playback-speed-config-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      this.showStatus('Configuration exported successfully!', 'success');
+    });
+  }
+
+  importConfiguration() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const config = JSON.parse(event.target.result);
+          chrome.storage.sync.set(config, () => {
+            this.restoreOptions();
+            this.showStatus('Configuration imported successfully!', 'success');
+          });
+        } catch (error) {
+          this.showStatus('Invalid configuration file!', 'error');
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
   }
 }
 
