@@ -28,11 +28,13 @@ class OptionsManager {
   }
 
   async init() {
+    console.log('Options Manager initializing...');
     await this.loadKeycodes();
     this.setupEventListeners();
     this.restoreOptions();
     this.updateTimeSaved();
     this.initTheme();
+    console.log('Options Manager initialized successfully');
   }
 
   initTheme() {
@@ -146,18 +148,14 @@ class OptionsManager {
     this.setupKeyboardCapture('slowerKeyInput', 'clearSlowerKey');
     this.setupKeyboardCapture('resetKeyInput', 'clearResetKey');
     
-    // Theme toggle listeners - both buttons toggle between light/dark
+    // Theme toggle listeners
     document.getElementById('lightModeBtn').addEventListener('click', () => {
-      const currentDarkMode = document.documentElement.classList.contains('dark');
-      const newDarkMode = !currentDarkMode;
-      this.applyTheme(newDarkMode);
-      chrome.storage.sync.set({ darkMode: newDarkMode });
+      this.applyTheme(false); // Set light mode
+      chrome.storage.sync.set({ darkMode: false });
     });
     document.getElementById('darkModeBtn').addEventListener('click', () => {
-      const currentDarkMode = document.documentElement.classList.contains('dark');
-      const newDarkMode = !currentDarkMode;
-      this.applyTheme(newDarkMode);
-      chrome.storage.sync.set({ darkMode: newDarkMode });
+      this.applyTheme(true); // Set dark mode
+      chrome.storage.sync.set({ darkMode: true });
     });
     
     // Advanced tab event listeners
@@ -244,7 +242,20 @@ class OptionsManager {
 
   restoreOptions() {
     chrome.storage.sync.get(DEFAULT_SETTINGS, (items) => {
-      document.getElementById('speedStep').value = items.speedStep.toFixed(2);
+      console.log('Restoring options:', items);
+      
+      // Update speed step slider
+      const speedSlider = document.getElementById('speedStep');
+      speedSlider.value = items.speedStep.toFixed(2);
+      
+      // Trigger the speed display update
+      const speedDisplay = document.getElementById('speedStepDisplay');
+      const speedValue = document.getElementById('speedStepValue');
+      const value = parseFloat(speedSlider.value).toFixed(2);
+      const percentage = ((speedSlider.value - speedSlider.min) / (speedSlider.max - speedSlider.min)) * 100;
+      speedSlider.style.setProperty('--slider-progress', percentage + '%');
+      if (speedDisplay) speedDisplay.textContent = value + 'x';
+      if (speedValue) speedValue.textContent = value + 'x';
       
       // Restore keyboard shortcuts with friendly display names
       const slowerInput = document.getElementById('slowerKeyInput');
@@ -337,10 +348,18 @@ class OptionsManager {
   updateTimeSaved() {
     chrome.storage.sync.get({ secSaved: 0 }, (items) => {
       const seconds = items.secSaved;
+      console.log('Time saved data:', seconds, 'seconds');
+      
+      const timeSavedSection = document.getElementById('timeSavedSection');
+      const totalSavedTime = document.getElementById('totalSavedTime');
+      
       if (seconds > 0) {
         const timeString = this.formatTimeSaved(seconds);
-        document.getElementById('totalSavedTime').textContent = `Time saved by speeding up videos: ${timeString}`;
-        document.getElementById('timeSavedSection').style.display = 'block';
+        totalSavedTime.textContent = `Time saved by speeding up videos: ${timeString}`;
+        timeSavedSection.style.display = 'block';
+        console.log('Displaying time saved:', timeString);
+      } else {
+        console.log('No time saved yet - section hidden');
       }
     });
   }
