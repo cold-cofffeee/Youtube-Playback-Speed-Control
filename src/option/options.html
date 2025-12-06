@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -86,6 +86,29 @@
 							<div>
 								<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">General Settings</h2>
 								
+								<!-- Theme Toggle -->
+								<div class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between">
+									<div class="flex items-center gap-4">
+										<div class="text-slate-600 dark:text-slate-300 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 size-12">
+											<span class="material-symbols-outlined">desktop_windows</span>
+										</div>
+										<div class="flex flex-col justify-center">
+											<p class="text-slate-800 dark:text-white text-base font-medium leading-normal line-clamp-1">Appearance</p>
+											<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">Choose between light and dark themes.</p>
+										</div>
+									</div>
+									<div class="shrink-0">
+										<div class="flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 p-1">
+											<button id="lightModeBtn" class="flex h-8 w-8 items-center justify-center rounded-md bg-transparent text-slate-500 dark:text-slate-400 transition-colors duration-200 hover:text-slate-700 dark:hover:text-slate-200">
+												<span class="material-symbols-outlined text-xl">light_mode</span>
+											</button>
+											<button id="darkModeBtn" class="flex h-8 w-8 items-center justify-center rounded-md bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm transition-colors duration-200">
+												<span class="material-symbols-outlined text-xl">dark_mode</span>
+											</button>
+										</div>
+									</div>
+								</div>
+
 								<!-- Speed Step Slider -->
 								<div class="@container">
 									<div class="relative flex w-full flex-col items-start justify-between gap-3 p-4 @[480px]:flex-row @[480px]:items-center">
@@ -247,44 +270,184 @@
 							</div>
 						</div>
 
-						<!-- Shortcuts Tab Content -->
-						<div id="shortcutsContent" class="tab-content-section" style="display: none;">
-							<div>
-								<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Keyboard Shortcuts</h2>
+					<!-- Shortcuts Tab Content -->
+					<div id="shortcutsContent" class="tab-content-section" style="display: none;">
+						<div class="divide-y divide-slate-200 dark:divide-slate-800">
+							<!-- Keyboard Shortcuts Section -->
+							<div class="py-5">
+								<div class="px-4 pb-3 flex justify-between items-center">
+									<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">Keyboard Shortcuts</h2>
+									<button id="addShortcutBtn" class="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+										<span class="material-symbols-outlined text-base">add_circle</span>
+										<span>Add New Shortcut</span>
+									</button>
+								</div>
+								<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal px-4 mt-1 mb-5">Define keyboard shortcuts for quick access to playback controls. Click an input field and press your desired key combination.</p>
 								
-								<!-- Increase Speed Shortcut -->
-								<div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 px-4 min-h-[72px] py-3 justify-between">
-									<div class="flex flex-col justify-center">
-										<p class="text-slate-800 dark:text-white text-base font-medium leading-normal line-clamp-1">Increase Speed</p>
-										<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">Increase the current playback speed.</p>
+								<div class="flex flex-col divide-y divide-slate-200 dark:divide-slate-800">
+									<!-- Increase Speed Shortcut -->
+									<div class="flex flex-col p-4">
+										<div class="flex flex-wrap items-center justify-between gap-4">
+											<div class="flex items-start gap-4">
+												<div class="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+													<span class="material-symbols-outlined text-2xl">fast_forward</span>
+												</div>
+												<div class="flex flex-col">
+													<p class="text-base font-medium text-slate-900 dark:text-white">Increase Speed</p>
+													<p class="text-sm text-slate-500 dark:text-slate-400">Increase the current playback speed by 0.25x.</p>
+												</div>
+										</div>
+										<div class="relative w-full sm:w-auto">
+											<input id="fasterKeyInput" type="text" readonly class="w-full rounded-lg border-slate-300 bg-white py-2 pl-3 pr-10 text-sm text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-700 dark:placeholder:text-slate-500 sm:w-52 cursor-pointer" placeholder="Press keys..." />
+											<button id="clearFasterKey" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300">
+												<span class="material-symbols-outlined text-lg">close</span>
+											</button>
+										</div>
+										</div>
+										<!-- Conflict warning (hidden by default) -->
+										<div id="fasterConflict" class="mt-3 flex w-full flex-col gap-3 rounded-lg border border-red-500/50 bg-red-50 p-3 dark:border-red-500/30 dark:bg-red-500/10 sm:ml-14" style="display: none;">
+											<div class="flex items-center gap-2">
+												<span class="material-symbols-outlined text-lg text-red-600 dark:text-red-400">warning</span>
+												<p class="text-sm font-medium text-red-800 dark:text-red-300">Conflict Detected</p>
+											</div>
+											<p class="text-sm text-red-700 dark:text-red-400">This shortcut may conflict with browser defaults.</p>
+										</div>
 									</div>
-									<select id="fasterKeyInput" class="w-full sm:w-48 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary px-3 py-2">
-									</select>
+
+									<!-- Decrease Speed Shortcut -->
+									<div class="flex flex-col p-4">
+										<div class="flex flex-wrap items-center justify-between gap-4">
+											<div class="flex items-start gap-4">
+												<div class="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+													<span class="material-symbols-outlined text-2xl">fast_rewind</span>
+												</div>
+												<div class="flex flex-col">
+													<p class="text-base font-medium text-slate-900 dark:text-white">Decrease Speed</p>
+													<p class="text-sm text-slate-500 dark:text-slate-400">Decrease the current playback speed by 0.25x.</p>
+												</div>
+										</div>
+										<div class="relative w-full sm:w-auto">
+											<input id="slowerKeyInput" type="text" readonly class="w-full rounded-lg border-slate-300 bg-white py-2 pl-3 pr-10 text-sm text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-700 dark:placeholder:text-slate-500 sm:w-52 cursor-pointer" placeholder="Press keys..." />
+											<button id="clearSlowerKey" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300">
+												<span class="material-symbols-outlined text-lg">close</span>
+											</button>
+										</div>
+										</div>
+									</div>
+
+									<!-- Reset Speed Shortcut -->
+									<div class="flex flex-col p-4">
+										<div class="flex flex-wrap items-center justify-between gap-4">
+											<div class="flex items-start gap-4">
+												<div class="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+													<span class="material-symbols-outlined text-2xl">replay</span>
+												</div>
+												<div class="flex flex-col">
+													<p class="text-base font-medium text-slate-900 dark:text-white">Reset Speed</p>
+													<p class="text-sm text-slate-500 dark:text-slate-400">Reset playback speed to 1x.</p>
+												</div>
+										</div>
+										<div class="relative w-full sm:w-auto">
+											<input id="resetKeyInput" type="text" readonly class="w-full rounded-lg border-slate-300 bg-white py-2 pl-3 pr-10 text-sm text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-700 dark:placeholder:text-slate-500 sm:w-52 cursor-pointer" placeholder="Press keys..." />
+											<button id="clearResetKey" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300">
+												<span class="material-symbols-outlined text-lg">close</span>
+											</button>
+										</div>
+										</div>
+										<!-- Context-aware info -->
+										<div class="mt-3 flex w-full flex-col gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-800/50 sm:ml-14">
+											<div class="flex items-center gap-2">
+												<span class="material-symbols-outlined text-base text-slate-500 dark:text-slate-400">public</span>
+												<p class="text-sm font-medium text-slate-600 dark:text-slate-300">Context-aware: <span class="font-normal">Active only on youtube.com</span></p>
+											</div>
+										</div>
+									</div>
+
+									<!-- Toggle Controller Shortcut -->
+									<div class="flex flex-wrap items-center justify-between gap-4 p-4">
+										<div class="flex items-start gap-4">
+											<div class="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+												<span class="material-symbols-outlined text-2xl">visibility</span>
+											</div>
+											<div class="flex flex-col">
+												<p class="text-base font-medium text-slate-900 dark:text-white">Toggle Controller</p>
+												<p class="text-sm text-slate-500 dark:text-slate-400">Show or hide the speed controller on the video.</p>
+											</div>
+										</div>
+										<div class="relative w-full sm:w-auto">
+											<input class="w-full rounded-lg border-slate-300 bg-white py-2 pl-3 pr-10 text-sm text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-700 dark:placeholder:text-slate-500 sm:w-52" placeholder="Not set" type="text" readonly/>
+											<button class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300">
+												<span class="material-symbols-outlined text-lg">close</span>
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- Premium Shortcuts Section -->
+							<div class="py-5 pt-10">
+								<div class="px-4 pb-3 flex justify-between items-center">
+									<div class="flex items-center gap-3">
+										<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">Premium Shortcuts</h2>
+										<div class="flex items-center gap-1.5 rounded-full bg-yellow-400/20 px-2.5 py-1 text-xs font-semibold text-yellow-700 dark:bg-yellow-400/10 dark:text-yellow-400">
+											<span class="material-symbols-outlined !text-sm !font-semibold">workspace_premium</span>
+											<span>PRO</span>
+										</div>
+									</div>
+								</div>
+								<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal px-4 mt-1 mb-5">Unlock advanced control schemes with a Premium subscription for the ultimate power-user experience.</p>
+								
+								<div class="flex flex-col divide-y divide-slate-200 dark:divide-slate-800">
+									<!-- Skip Ad Shortcut (Premium) -->
+									<div class="flex flex-wrap items-center justify-between gap-4 p-4 opacity-50">
+										<div class="flex items-start gap-4">
+											<div class="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+												<span class="material-symbols-outlined text-2xl">skip_next</span>
+											</div>
+											<div class="flex flex-col">
+												<p class="text-base font-medium text-slate-900 dark:text-white">Skip Ad</p>
+												<p class="text-sm text-slate-500 dark:text-slate-400">Instantly skip the current video advertisement.</p>
+											</div>
+										</div>
+										<div class="relative w-full sm:w-auto">
+											<input class="w-full cursor-not-allowed rounded-lg border-slate-300 bg-white py-2 pl-3 pr-10 text-sm text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-700 dark:placeholder:text-slate-500 sm:w-52" disabled="" type="text" value="Shift + A"/>
+										</div>
+									</div>
+
+									<!-- Toggle Captions Shortcut (Premium) -->
+									<div class="flex flex-wrap items-center justify-between gap-4 p-4 opacity-50">
+										<div class="flex items-start gap-4">
+											<div class="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+												<span class="material-symbols-outlined text-2xl">closed_caption</span>
+											</div>
+											<div class="flex flex-col">
+												<p class="text-base font-medium text-slate-900 dark:text-white">Toggle Captions</p>
+												<p class="text-sm text-slate-500 dark:text-slate-400">Turn video captions on or off.</p>
+											</div>
+										</div>
+										<div class="relative w-full sm:w-auto">
+											<input class="w-full cursor-not-allowed rounded-lg border-slate-300 bg-white py-2 pl-3 pr-10 text-sm text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-700 dark:placeholder:text-slate-500 sm:w-52" disabled="" type="text" value="C"/>
+										</div>
+									</div>
 								</div>
 
-								<!-- Decrease Speed Shortcut -->
-								<div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 px-4 min-h-[72px] py-3 justify-between">
-									<div class="flex flex-col justify-center">
-										<p class="text-slate-800 dark:text-white text-base font-medium leading-normal line-clamp-1">Decrease Speed</p>
-										<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">Decrease the current playback speed.</p>
+								<!-- Premium Upgrade CTA -->
+								<div class="mt-5 px-4">
+									<div class="flex flex-col items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-center dark:border-slate-700 dark:bg-slate-800/50">
+										<div class="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+											<span class="material-symbols-outlined text-3xl">lock_open</span>
+										</div>
+										<p class="mt-4 text-base font-bold text-slate-900 dark:text-white">Unlock Premium Shortcuts</p>
+										<p class="mt-1 max-w-sm text-sm text-slate-500 dark:text-slate-400">Get access to these and many more advanced features by upgrading your account.</p>
+										<button class="mt-5 flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors">
+											<span class="material-symbols-outlined text-base">workspace_premium</span>
+											<span>Upgrade to Pro</span>
+										</button>
 									</div>
-									<select id="slowerKeyInput" class="w-full sm:w-48 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary px-3 py-2">
-									</select>
-								</div>
-
-								<!-- Reset Speed Shortcut -->
-								<div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 px-4 min-h-[72px] py-3 justify-between">
-									<div class="flex flex-col justify-center">
-										<p class="text-slate-800 dark:text-white text-base font-medium leading-normal line-clamp-1">Reset Speed</p>
-										<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">Reset speed to 1.0x (normal speed).</p>
-									</div>
-									<select id="resetKeyInput" class="w-full sm:w-48 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary px-3 py-2">
-									</select>
 								</div>
 							</div>
 						</div>
-
-						<!-- Advanced Tab Content -->
+					</div>						<!-- Advanced Tab Content -->
 						<div id="advancedContent" class="tab-content-section" style="display: none;">
 							<div>
 								<!-- Playback Behavior Section -->

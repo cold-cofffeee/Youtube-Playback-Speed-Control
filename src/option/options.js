@@ -17,6 +17,7 @@ const DEFAULT_SETTINGS = {
   autoSkipIntros: false,
   forceSpeedAllVideos: false,
   debugLogging: false,
+  darkMode: false,
   secSaved: 0
 };
 
@@ -31,6 +32,35 @@ class OptionsManager {
     this.setupEventListeners();
     this.restoreOptions();
     this.updateTimeSaved();
+    this.initTheme();
+  }
+
+  initTheme() {
+    // Load theme from storage or default
+    chrome.storage.sync.get(['darkMode'], (result) => {
+      const darkMode = result.darkMode !== undefined ? result.darkMode : DEFAULT_SETTINGS.darkMode;
+      this.applyTheme(darkMode);
+    });
+  }
+
+  applyTheme(darkMode) {
+    const html = document.documentElement;
+    const lightBtn = document.getElementById('lightModeBtn');
+    const darkBtn = document.getElementById('darkModeBtn');
+    
+    if (darkMode) {
+      html.classList.add('dark');
+      lightBtn.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+      lightBtn.classList.add('bg-transparent', 'text-slate-500', 'dark:text-slate-400');
+      darkBtn.classList.remove('bg-transparent', 'text-slate-500', 'dark:text-slate-400');
+      darkBtn.classList.add('bg-white', 'dark:bg-slate-900', 'text-slate-900', 'dark:text-white', 'shadow-sm');
+    } else {
+      html.classList.remove('dark');
+      darkBtn.classList.remove('bg-white', 'dark:bg-slate-900', 'text-slate-900', 'dark:text-white', 'shadow-sm');
+      darkBtn.classList.add('bg-transparent', 'text-slate-500', 'dark:text-slate-400');
+      lightBtn.classList.remove('bg-transparent', 'text-slate-500', 'dark:text-slate-400');
+      lightBtn.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+    }
   }
 
   async loadKeycodes() {
@@ -38,25 +68,71 @@ class OptionsManager {
       const response = await fetch('keycodedict.json');
       const data = await response.json();
       this.keycodes = data.keycodedict;
-      this.populateKeySelects();
     } catch (error) {
       console.error('Failed to load keycodes:', error);
     }
   }
 
-  populateKeySelects() {
-    const fasterSelect = document.getElementById('fasterKeyInput');
-    const slowerSelect = document.getElementById('slowerKeyInput');
-    const resetSelect = document.getElementById('resetKeyInput');
+  getKeyDisplayName(keycode) {
+    if (!this.keycodes || !keycode) return '';
+    const keyData = this.keycodes.find(k => k.keycode === keycode);
+    return keyData ? keyData.input : keycode;
+  }
 
-    [fasterSelect, slowerSelect, resetSelect].forEach(select => {
-      select.innerHTML = '';
-      this.keycodes.forEach(keycode => {
-        const option = document.createElement('option');
-        option.value = keycode.keycode;
-        option.textContent = keycode.input;
-        select.appendChild(option);
-      });
+  setupKeyboardCapture(inputId, clearBtnId) {
+    const input = document.getElementById(inputId);
+    const clearBtn = document.getElementById(clearBtnId);
+    
+    input.addEventListener('click', () => {
+      input.value = 'Press any key...';
+      input.classList.add('ring-primary', 'ring-2');
+    });
+
+    input.addEventListener('keydown', (e) => {
+      e.preventDefault();
+      
+      const keys = [];
+      if (e.ctrlKey) keys.push('Ctrl');
+      if (e.altKey) keys.push('Alt');
+      if (e.shiftKey) keys.push('Shift');
+      if (e.metaKey) keys.push('Meta');
+      
+      // Add the actual key if it's not a modifier
+      const key = e.key;
+      if (!['Control', 'Alt', 'Shift', 'Meta'].includes(key)) {
+        if (key === ' ') {
+          keys.push('Space');
+        } else if (key === 'ArrowUp') {
+          keys.push('↑');
+        } else if (key === 'ArrowDown') {
+          keys.push('↓');
+        } else if (key === 'ArrowLeft') {
+          keys.push('←');
+        } else if (key === 'ArrowRight') {
+          keys.push('→');
+        } else {
+          keys.push(key.length === 1 ? key.toUpperCase() : key);
+        }
+      }
+      
+      input.value = keys.join(' + ') || 'Press any key...';
+      input.classList.remove('ring-primary', 'ring-2');
+      
+      // Store the keycode for saving
+      input.dataset.keycode = e.keyCode || e.which;
+    });
+
+    input.addEventListener('blur', () => {
+      input.classList.remove('ring-primary', 'ring-2');
+      if (input.value === 'Press any key...') {
+        input.value = '';
+      }
+    });
+
+    clearBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      input.value = '';
+      input.dataset.keycode = '';
     });
   }
 
@@ -64,6 +140,25 @@ class OptionsManager {
     document.getElementById('save').addEventListener('click', () => this.saveOptions());
     document.getElementById('restore').addEventListener('click', () => this.restoreDefaults());
     document.getElementById('speedStep').addEventListener('keypress', this.validateNumberInput);
+    
+    // Setup keyboard capture for shortcuts
+    this.setupKeyboardCapture('fasterKeyInput', 'clearFasterKey');
+    this.setupKeyboardCapture('slowerKeyInput', 'clearSlowerKey');
+    this.setupKeyboardCapture('resetKeyInput', 'clearResetKey');
+    
+    // Theme toggle listeners - both buttons toggle between light/dark
+    document.getElementById('lightModeBtn').addEventListener('click', () => {
+      const currentDarkMode = document.documentElement.classList.contains('dark');
+      const newDarkMode = !currentDarkMode;
+      this.applyTheme(newDarkMode);
+      chrome.storage.sync.set({ darkMode: newDarkMode });
+    });
+    document.getElementById('darkModeBtn').addEventListener('click', () => {
+      const currentDarkMode = document.documentElement.classList.contains('dark');
+      const newDarkMode = !currentDarkMode;
+      this.applyTheme(newDarkMode);
+      chrome.storage.sync.set({ darkMode: newDarkMode });
+    });
     
     // Advanced tab event listeners
     document.getElementById('clearWebsiteData').addEventListener('click', () => this.clearWebsiteData());
@@ -89,9 +184,9 @@ class OptionsManager {
 
   saveOptions() {
     const speedStep = parseFloat(document.getElementById('speedStep').value);
-    const slowerKeyCode = document.getElementById('slowerKeyInput').value;
-    const fasterKeyCode = document.getElementById('fasterKeyInput').value;
-    const resetKeyCode = document.getElementById('resetKeyInput').value;
+    const slowerKeyCode = document.getElementById('slowerKeyInput').dataset.keycode || DEFAULT_SETTINGS.slowerKeyCode;
+    const fasterKeyCode = document.getElementById('fasterKeyInput').dataset.keycode || DEFAULT_SETTINGS.fasterKeyCode;
+    const resetKeyCode = document.getElementById('resetKeyInput').dataset.keycode || DEFAULT_SETTINGS.resetKeyCode;
     const allowMouseWheel = document.getElementById('allowMouseWheel').checked;
     const rememberSpeed = document.getElementById('rememberSpeed').checked;
     const hideSettingButton = document.getElementById('hideSettingButton').checked;
@@ -123,6 +218,9 @@ class OptionsManager {
     // Validate speed step
     const validSpeedStep = isNaN(speedStep) ? DEFAULT_SETTINGS.speedStep : speedStep;
 
+    // Get current theme
+    const darkMode = document.documentElement.classList.contains('dark');
+
     // Save to Chrome storage
     chrome.storage.sync.set({
       speedStep: validSpeedStep,
@@ -137,7 +235,8 @@ class OptionsManager {
       enableAllVideosButton,
       autoSkipIntros,
       forceSpeedAllVideos,
-      debugLogging
+      debugLogging,
+      darkMode
     }, () => {
       this.showStatus('Options saved successfully!', 'success');
     });
@@ -146,9 +245,20 @@ class OptionsManager {
   restoreOptions() {
     chrome.storage.sync.get(DEFAULT_SETTINGS, (items) => {
       document.getElementById('speedStep').value = items.speedStep.toFixed(2);
-      document.getElementById('slowerKeyInput').value = items.slowerKeyCode;
-      document.getElementById('fasterKeyInput').value = items.fasterKeyCode;
-      document.getElementById('resetKeyInput').value = items.resetKeyCode;
+      
+      // Restore keyboard shortcuts with friendly display names
+      const slowerInput = document.getElementById('slowerKeyInput');
+      const fasterInput = document.getElementById('fasterKeyInput');
+      const resetInput = document.getElementById('resetKeyInput');
+      
+      slowerInput.dataset.keycode = items.slowerKeyCode;
+      fasterInput.dataset.keycode = items.fasterKeyCode;
+      resetInput.dataset.keycode = items.resetKeyCode;
+      
+      slowerInput.value = this.getKeyDisplayName(items.slowerKeyCode);
+      fasterInput.value = this.getKeyDisplayName(items.fasterKeyCode);
+      resetInput.value = this.getKeyDisplayName(items.resetKeyCode);
+      
       document.getElementById('allowMouseWheel').checked = items.allowMouseWheel;
       document.getElementById('rememberSpeed').checked = items.rememberSpeed;
       document.getElementById('hideSettingButton').checked = items.hideSettingButton;
@@ -156,6 +266,9 @@ class OptionsManager {
       document.getElementById('autoSkipIntros').checked = items.autoSkipIntros;
       document.getElementById('forceSpeedAllVideos').checked = items.forceSpeedAllVideos;
       document.getElementById('debugLogging').checked = items.debugLogging;
+
+      // Restore theme
+      this.applyTheme(items.darkMode);
 
       // Restore display option
       const displayOption = document.getElementById(items.displayOption);
@@ -172,6 +285,9 @@ class OptionsManager {
   }
 
   restoreDefaults() {
+    if (!confirm('Are you sure you want to reset all settings to their default values? This action cannot be undone.')) {
+      return;
+    }
     chrome.storage.sync.set(DEFAULT_SETTINGS, () => {
       this.restoreOptions();
       this.showStatus('Default options restored!', 'info');
