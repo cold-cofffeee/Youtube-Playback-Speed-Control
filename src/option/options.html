@@ -5,361 +5,739 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>YouTube Playback Speed Control - Settings</title>
 	
-	<!-- Bootstrap CSS from CDN -->
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	<!-- Tailwind CSS -->
+	<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 	
-	<!-- Bootstrap Icons from CDN -->
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+	<!-- Google Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 	
-	<!-- Custom Styles -->
-	<link rel="stylesheet" href="../../css/smart-green.css"/>
+	<script>
+		tailwind.config = {
+			darkMode: "class",
+			theme: {
+				extend: {
+					colors: {
+						"primary": "#135bec",
+						"background-light": "#f6f6f8",
+						"background-dark": "#101622",
+					},
+					fontFamily: {
+						"display": ["Inter", "sans-serif"]
+					},
+					borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+				},
+			},
+		}
+	</script>
 	
 	<style>
-		body {
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-			min-height: 100vh;
-			padding: 2rem 0;
-		}
-		.main-container {
-			background: white;
-			border-radius: 15px;
-			box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-			padding: 2rem;
-		}
-		.header-section {
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-			color: white;
-			padding: 2rem;
-			border-radius: 10px;
-			margin-bottom: 2rem;
-		}
-		.time-saved-badge {
-			background: #4caf50;
-			color: white;
-			padding: 1rem 1.5rem;
-			border-radius: 10px;
-			font-size: 1.1rem;
-			margin-bottom: 1.5rem;
-			display: inline-block;
-		}
-		.settings-card {
-			border: 1px solid #e0e0e0;
-			border-radius: 10px;
-			padding: 1.5rem;
-			margin-bottom: 1rem;
-		}
-		.btn-save {
-			background: #4caf50;
-			color: white;
-			padding: 0.7rem 2rem;
-			border: none;
-			border-radius: 5px;
-			font-weight: 600;
-		}
-		.btn-save:hover {
-			background: #45a049;
-			color: white;
-		}
-		.btn-reset {
-			background: #f44336;
-			color: white;
-			padding: 0.7rem 2rem;
-			border: none;
-			border-radius: 5px;
-			font-weight: 600;
-		}
-		.btn-reset:hover {
-			background: #da190b;
-			color: white;
+		.material-symbols-outlined {
+			font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 		}
 	</style>
 </head>
-<body>
-	<div class="container">
-		<div class="main-container">
-			<!-- Header -->
-			<div class="header-section text-center">
-				<h1><i class="bi bi-play-circle-fill"></i> YouTube Playback Speed Control</h1>
-				<p class="lead mb-0">Control your video playback with ease</p>
-			</div>
-
-			<!-- Time Saved Badge -->
-			<div class="text-center mb-4">
-				<div class="time-saved-badge">
-					<i class="bi bi-clock-history"></i>
-					<strong id="totalSavedTime">Loading time saved...</strong>
-				</div>
-			</div>
-
-			<!-- Navigation Tabs -->
-			<ul class="nav nav-tabs mb-4" id="mainTab" role="tablist">
-				<li class="nav-item" role="presentation">
-					<button class="nav-link active" id="HomeTab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab">
-						<i class="bi bi-house-door"></i> Getting Started
-					</button>
-				</li>
-				<li class="nav-item" role="presentation">
-					<button class="nav-link" id="SettingsTab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab">
-						<i class="bi bi-gear"></i> Settings
-					</button>
-				</li>
-				<li class="nav-item" role="presentation">
-					<button class="nav-link" id="AboutTab" data-bs-toggle="tab" data-bs-target="#about" type="button" role="tab">
-						<i class="bi bi-info-circle"></i> About
-					</button>
-				</li>
-			</ul>
-
-			<!-- Tab Content -->
-			<div class="tab-content" id="mainTabContent">
-				
-				<!-- Getting Started Tab -->
-				<div class="tab-pane fade show active" id="home" role="tabpanel">
-					<div class="settings-card">
-						<h3><i class="bi bi-rocket-takeoff"></i> Welcome!</h3>
-						<p>Thank you for installing YouTube Playback Speed Control! This extension allows you to control video playback speed with convenient keyboard shortcuts.</p>
-						
-						<h4 class="mt-4"><i class="bi bi-keyboard"></i> Default Keyboard Shortcuts</h4>
-						<ul class="list-group list-group-flush mb-3">
-							<li class="list-group-item"><kbd>+</kbd> or <kbd>=</kbd> - Increase playback speed</li>
-							<li class="list-group-item"><kbd>-</kbd> or <kbd>_</kbd> - Decrease playback speed</li>
-							<li class="list-group-item"><kbd>*</kbd> (Numpad) - Reset to 1x speed</li>
-							<li class="list-group-item"><kbd>Shift</kbd> + <kbd>Mouse Wheel</kbd> - Adjust speed with mouse</li>
-						</ul>
-
-						<h4><i class="bi bi-display"></i> On-Screen Controls</h4>
-						<p>A small control panel will appear on your videos with:</p>
-						<ul>
-							<li><strong>&gt;&gt;</strong> button to increase speed</li>
-							<li><strong>Current speed display</strong> (click to reset to 1x)</li>
-							<li><strong>&lt;&lt;</strong> button to decrease speed</li>
-							<li><strong>⚙️</strong> button to open settings</li>
-						</ul>
-
-						<h4 class="mt-4"><i class="bi bi-check2-circle"></i> Getting Started</h4>
-						<ol>
-							<li>Visit any YouTube video</li>
-							<li>Use keyboard shortcuts or on-screen controls to adjust speed</li>
-							<li>Customize your experience in the <strong>Settings</strong> tab</li>
-							<li>Enable "All Videos" mode to use on other HTML5 video players</li>
-						</ol>
-
-						<div class="alert alert-info mt-3">
-							<i class="bi bi-lightbulb"></i> <strong>Tip:</strong> You can customize all keyboard shortcuts, speed increments, and display options in the Settings tab!
-						</div>
-					</div>
-				</div>
-
-				<!-- Settings Tab -->
-				<div class="tab-pane fade" id="settings" role="tabpanel">
+<body class="bg-background-light dark:bg-background-dark font-display">
+	<div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden">
+		<div class="layout-container flex h-full grow flex-col">
+			<div class="px-4 sm:px-10 md:px-20 lg:px-40 flex flex-1 justify-center py-5">
+				<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
 					
-					<!-- Keyboard Controls -->
-					<div class="settings-card">
-						<h4><i class="bi bi-keyboard"></i> Keyboard Controls</h4>
-						<div class="row g-3">
-							<div class="col-md-4">
-								<label for="slowerKeyInput" class="form-label">Decrease Speed Key</label>
-								<select id="slowerKeyInput" class="form-select"></select>
-							</div>
-							<div class="col-md-4">
-								<label for="fasterKeyInput" class="form-label">Increase Speed Key</label>
-								<select id="fasterKeyInput" class="form-select"></select>
-							</div>
-							<div class="col-md-4">
-								<label for="resetKeyInput" class="form-label">Reset Speed Key</label>
-								<select id="resetKeyInput" class="form-select"></select>
-							</div>
+					<!-- Page Heading -->
+					<div class="flex flex-wrap justify-between gap-4 p-4 items-center">
+						<div class="flex min-w-72 flex-col gap-2">
+							<p class="text-slate-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">Playback Speed Controller</p>
+							<p class="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal">Customize your video playback experience.</p>
 						</div>
-					</div>
-
-					<!-- Speed Settings -->
-					<div class="settings-card">
-						<h4><i class="bi bi-speedometer"></i> Speed Settings</h4>
-						<div class="row g-3">
-							<div class="col-md-6">
-								<label for="speedStep" class="form-label">Speed Change Step</label>
-								<input id="speedStep" type="number" step="0.05" min="0.05" max="1" class="form-control" placeholder="0.25"/>
-								<small class="text-muted">How much speed changes per keypress (e.g., 0.25 = 0.25x per press)</small>
-							</div>
-						</div>
-					</div>
-
-					<!-- General Options -->
-					<div class="settings-card">
-						<h4><i class="bi bi-toggles"></i> General Options</h4>
-						<div class="form-check form-switch mb-3">
-							<input class="form-check-input" type="checkbox" id="allowMouseWheel">
-							<label class="form-check-label" for="allowMouseWheel">
-								Enable Shift + Mouse Wheel to control playback speed
-							</label>
-						</div>
-						<div class="form-check form-switch mb-3">
-							<input class="form-check-input" type="checkbox" id="rememberSpeed">
-							<label class="form-check-label" for="rememberSpeed">
-								Remember playback speed across all videos
-							</label>
-						</div>
-						<div class="form-check form-switch mb-3">
-							<input class="form-check-input" type="checkbox" id="hideSettingButton">
-							<label class="form-check-label" for="hideSettingButton">
-								Hide settings button on video player
-							</label>
-						</div>
-						<div class="form-check form-switch">
-							<input class="form-check-input" type="checkbox" id="enableAllVideosButton">
-							<label class="form-check-label" for="enableAllVideosButton">
-								Enable for all videos (not just YouTube) 
-								<span class="badge bg-warning text-dark">BETA</span>
-							</label>
-						</div>
-					</div>
-
-					<!-- Display Options -->
-					<div class="settings-card">
-						<h4><i class="bi bi-eye"></i> Display Options</h4>
-						<p class="text-muted">Choose how the control panel appears on videos</p>
-						<div class="row g-3">
-							<div class="col-md-6 col-lg-3">
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="displayOption" id="Always" value="Always">
-									<label class="form-check-label" for="Always">
-										<strong>Always Visible</strong><br>
-										<small class="text-muted">Panel always shown</small>
-									</label>
-								</div>
-							</div>
-							<div class="col-md-6 col-lg-3">
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="displayOption" id="FadeInFadeOut" value="FadeInFadeOut" checked>
-									<label class="form-check-label" for="FadeInFadeOut">
-										<strong>Auto Hide</strong><br>
-										<small class="text-muted">Show on hover</small>
-									</label>
-								</div>
-							</div>
-							<div class="col-md-6 col-lg-3">
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="displayOption" id="Simple" value="Simple">
-									<label class="form-check-label" for="Simple">
-										<strong>Minimal</strong><br>
-										<small class="text-muted">Speed only</small>
-									</label>
-								</div>
-							</div>
-							<div class="col-md-6 col-lg-3">
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="displayOption" id="None" value="None">
-									<label class="form-check-label" for="None">
-										<strong>Hidden</strong><br>
-										<small class="text-muted">No panel</small>
-									</label>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<!-- Display Position -->
-					<div class="settings-card">
-						<h4><i class="bi bi-pin-map"></i> Display Position</h4>
-						<p class="text-muted">Choose where the control panel appears</p>
-						<div class="row g-3">
-							<div class="col-6 col-md-4 col-lg-2">
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="displayPosition" id="TopLeft" value="TopLeft">
-									<label class="form-check-label" for="TopLeft">Top Left</label>
-								</div>
-							</div>
-							<div class="col-6 col-md-4 col-lg-2">
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="displayPosition" id="TopCenter" value="TopCenter">
-									<label class="form-check-label" for="TopCenter">Top Center</label>
-								</div>
-							</div>
-							<div class="col-6 col-md-4 col-lg-2">
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="displayPosition" id="TopRight" value="TopRight" checked>
-									<label class="form-check-label" for="TopRight">Top Right</label>
-								</div>
-							</div>
-							<div class="col-6 col-md-4 col-lg-2">
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="displayPosition" id="BottomLeft" value="BottomLeft">
-									<label class="form-check-label" for="BottomLeft">Bottom Left</label>
-								</div>
-							</div>
-							<div class="col-6 col-md-4 col-lg-2">
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="displayPosition" id="BottomCenter" value="BottomCenter">
-									<label class="form-check-label" for="BottomCenter">Bottom Center</label>
-								</div>
-							</div>
-							<div class="col-6 col-md-4 col-lg-2">
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="displayPosition" id="BottomRight" value="BottomRight">
-									<label class="form-check-label" for="BottomRight">Bottom Right</label>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<!-- Action Buttons -->
-					<div class="text-center mt-4">
-						<div id="status" class="alert d-none mb-3"></div>
-						<button id="save" class="btn btn-save me-2">
-							<i class="bi bi-save"></i> Save Settings
-						</button>
-						<button id="restore" class="btn btn-reset">
-							<i class="bi bi-arrow-counterclockwise"></i> Reset to Defaults
+						<button id="save" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-sm hover:bg-primary/90 transition-colors">
+							<span class="truncate">Save Settings</span>
 						</button>
 					</div>
-				</div>
 
-				<!-- About Tab -->
-				<div class="tab-pane fade" id="about" role="tabpanel">
-					<div class="settings-card">
-						<h3><i class="bi bi-info-circle"></i> About This Extension</h3>
-						<p><strong>Version:</strong> 1.0.0</p>
-						<p><strong>License:</strong> MIT License</p>
-						
-						<h4 class="mt-4">Features</h4>
-						<ul>
-							<li>Customizable keyboard shortcuts for speed control</li>
-							<li>Mouse wheel support with Shift modifier</li>
-							<li>Works on YouTube and other HTML5 video players</li>
-							<li>Multiple display modes and positions</li>
-							<li>Remembers your preferred speed across videos</li>
-							<li>Tracks time saved from watching at higher speeds</li>
-							<li>Fully compatible with embedded videos</li>
-						</ul>
-
-						<h4 class="mt-4">Compatibility</h4>
-						<ul>
-							<li>YouTube (regular and embedded)</li>
-							<li>HTML5 video players (when enabled)</li>
-							<li>Chrome 88+ and Edge 88+</li>
-						</ul>
-
-						<h4 class="mt-4">Support</h4>
-						<p>If you encounter any issues or have suggestions, please visit our GitHub repository.</p>
-						
-						<div class="alert alert-success mt-3">
-							<i class="bi bi-heart-fill"></i> Thank you for using YouTube Playback Speed Control!
+					<!-- Time Saved Display (hidden initially, shown in JavaScript) -->
+					<div id="timeSavedSection" class="px-4 pb-3" style="display: none;">
+						<div class="flex items-center gap-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg px-4 py-3">
+							<span class="material-symbols-outlined text-green-600 dark:text-green-400">schedule</span>
+							<p class="text-green-800 dark:text-green-300 text-sm font-medium" id="totalSavedTime">Loading time saved...</p>
 						</div>
 					</div>
-				</div>
 
+					<!-- Tabs -->
+					<div class="pb-3 mt-4">
+						<div class="flex border-b border-slate-200 dark:border-slate-700 px-4 gap-8">
+							<a id="generalTab" class="flex flex-col items-center justify-center border-b-[3px] border-b-primary text-slate-900 dark:text-white pb-[13px] pt-4 cursor-pointer" href="#general">
+								<p class="text-sm font-bold leading-normal tracking-[0.015em]">General</p>
+							</a>
+							<a id="shortcutsTab" class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-slate-500 dark:text-slate-400 pb-[13px] pt-4 hover:text-slate-700 dark:hover:text-slate-300 transition-colors cursor-pointer" href="#shortcuts">
+								<p class="text-sm font-bold leading-normal tracking-[0.015em]">Shortcuts</p>
+							</a>
+							<a id="advancedTab" class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-slate-500 dark:text-slate-400 pb-[13px] pt-4 hover:text-slate-700 dark:hover:text-slate-300 transition-colors cursor-pointer" href="#advanced">
+								<p class="text-sm font-bold leading-normal tracking-[0.015em]">Advanced</p>
+							</a>
+						</div>
+					</div>
+
+					<div class="divide-y divide-slate-200 dark:divide-slate-800" id="tabContent">
+
+						<!-- General Settings Tab Content -->
+						<div id="generalContent" class="tab-content-section">
+							<div>
+								<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">General Settings</h2>
+								
+								<!-- Theme Toggle -->
+								<div class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between">
+									<div class="flex items-center gap-4">
+										<div class="text-slate-600 dark:text-slate-300 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 size-12">
+											<span class="material-symbols-outlined">desktop_windows</span>
+										</div>
+										<div class="flex flex-col justify-center">
+											<p class="text-slate-800 dark:text-white text-base font-medium leading-normal line-clamp-1">Appearance</p>
+											<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">Choose between light and dark themes.</p>
+										</div>
+									</div>
+									<div class="shrink-0">
+										<div class="flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 p-1">
+											<button id="lightModeBtn" class="flex h-8 w-8 items-center justify-center rounded-md bg-transparent text-slate-500 dark:text-slate-400 transition-colors duration-200 hover:text-slate-700 dark:hover:text-slate-200">
+												<span class="material-symbols-outlined text-xl">light_mode</span>
+											</button>
+											<button id="darkModeBtn" class="flex h-8 w-8 items-center justify-center rounded-md bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm transition-colors duration-200">
+												<span class="material-symbols-outlined text-xl">dark_mode</span>
+											</button>
+										</div>
+									</div>
+								</div>
+
+								<!-- Speed Step Slider -->
+								<div class="@container">
+									<div class="relative flex w-full flex-col items-start justify-between gap-3 p-4 @[480px]:flex-row @[480px]:items-center">
+										<div class="flex w-full shrink-[3] items-center justify-between">
+											<p class="text-slate-800 dark:text-white text-base font-medium leading-normal">Speed Change Step</p>
+											<p id="speedStepDisplay" class="text-slate-800 dark:text-white text-sm font-normal leading-normal @[480px]:hidden">0.25x</p>
+										</div>
+										<div class="flex h-4 w-full items-center gap-4">
+											<input type="range" id="speedStep" min="0.05" max="1" step="0.05" value="0.25" class="flex-1 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full appearance-none cursor-pointer slider-thumb">
+											<p id="speedStepValue" class="text-slate-600 dark:text-slate-300 text-sm font-normal leading-normal hidden @[480px]:block w-12 text-center">0.25x</p>
+										</div>
+									</div>
+								</div>
+
+								<!-- Remember Speed Toggle -->
+								<div class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between">
+									<div class="flex items-center gap-4">
+										<div class="text-slate-600 dark:text-white flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 size-12">
+											<span class="material-symbols-outlined">memory</span>
+										</div>
+										<div class="flex flex-col justify-center">
+											<p class="text-slate-800 dark:text-white text-base font-medium leading-normal line-clamp-1">Remember speed per website</p>
+											<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">Automatically apply the last used speed for each domain.</p>
+										</div>
+									</div>
+									<div class="shrink-0">
+										<label class="toggle-switch relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none p-0.5 has-[:checked]:justify-end">
+											<div class="toggle-knob h-full w-[27px] rounded-full bg-white" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+											<input id="rememberSpeed" class="invisible absolute" type="checkbox"/>
+										</label>
+									</div>
+								</div>
+
+								<!-- Mouse Wheel Toggle -->
+								<div class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between">
+									<div class="flex items-center gap-4">
+										<div class="text-slate-600 dark:text-white flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 size-12">
+											<span class="material-symbols-outlined">mouse</span>
+										</div>
+										<div class="flex flex-col justify-center">
+											<p class="text-slate-800 dark:text-white text-base font-medium leading-normal line-clamp-1">Enable mouse wheel control</p>
+											<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">Use Shift + Mouse Wheel to adjust playback speed.</p>
+										</div>
+									</div>
+									<div class="shrink-0">
+										<label class="toggle-switch relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none p-0.5 has-[:checked]:justify-end">
+											<div class="toggle-knob h-full w-[27px] rounded-full bg-white" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+											<input id="allowMouseWheel" class="invisible absolute" type="checkbox"/>
+										</label>
+									</div>
+								</div>
+
+								<!-- Hide Settings Button Toggle -->
+								<div class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between">
+									<div class="flex items-center gap-4">
+										<div class="text-slate-600 dark:text-white flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 size-12">
+											<span class="material-symbols-outlined">visibility_off</span>
+										</div>
+										<div class="flex flex-col justify-center">
+											<p class="text-slate-800 dark:text-white text-base font-medium leading-normal line-clamp-1">Hide settings button on video</p>
+											<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">Hide the settings button from the video controller overlay.</p>
+										</div>
+									</div>
+									<div class="shrink-0">
+										<label class="toggle-switch relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none p-0.5 has-[:checked]:justify-end">
+											<div class="toggle-knob h-full w-[27px] rounded-full bg-white" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+											<input id="hideSettingButton" class="invisible absolute" type="checkbox"/>
+										</label>
+									</div>
+								</div>
+
+								<!-- Enable All Videos Toggle -->
+								<div class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between">
+									<div class="flex items-center gap-4">
+										<div class="text-slate-600 dark:text-white flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 size-12">
+											<span class="material-symbols-outlined">play_circle</span>
+										</div>
+										<div class="flex flex-col justify-center">
+											<p class="text-slate-800 dark:text-white text-base font-medium leading-normal line-clamp-1">Enable for all videos <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">BETA</span></p>
+											<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">Works on all HTML5 video players, not just YouTube.</p>
+										</div>
+									</div>
+									<div class="shrink-0">
+										<label class="toggle-switch relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none p-0.5 has-[:checked]:justify-end">
+											<div class="toggle-knob h-full w-[27px] rounded-full bg-white" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+											<input id="enableAllVideosButton" class="invisible absolute" type="checkbox"/>
+										</label>
+									</div>
+								</div>
+
+								<!-- Display Options -->
+								<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Display Options</h2>
+								
+								<!-- Display Mode -->
+								<div class="px-4 py-3">
+									<p class="text-slate-800 dark:text-white text-base font-medium leading-normal mb-3">Controller Display Mode</p>
+									<div class="grid grid-cols-2 gap-3">
+										<label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border-2 border-transparent has-[:checked]:border-primary has-[:checked]:bg-primary/5 cursor-pointer transition-all">
+											<input type="radio" name="displayOption" id="Always" value="Always" class="w-4 h-4 text-primary">
+											<div>
+												<p class="text-slate-900 dark:text-white text-sm font-medium">Always Visible</p>
+												<p class="text-slate-500 dark:text-slate-400 text-xs">Panel always shown</p>
+											</div>
+										</label>
+										<label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border-2 border-transparent has-[:checked]:border-primary has-[:checked]:bg-primary/5 cursor-pointer transition-all">
+											<input type="radio" name="displayOption" id="FadeInFadeOut" value="FadeInFadeOut" class="w-4 h-4 text-primary" checked>
+											<div>
+												<p class="text-slate-900 dark:text-white text-sm font-medium">Auto Hide</p>
+												<p class="text-slate-500 dark:text-slate-400 text-xs">Show on hover</p>
+											</div>
+										</label>
+										<label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border-2 border-transparent has-[:checked]:border-primary has-[:checked]:bg-primary/5 cursor-pointer transition-all">
+											<input type="radio" name="displayOption" id="Simple" value="Simple" class="w-4 h-4 text-primary">
+											<div>
+												<p class="text-slate-900 dark:text-white text-sm font-medium">Minimal</p>
+												<p class="text-slate-500 dark:text-slate-400 text-xs">Speed only</p>
+											</div>
+										</label>
+										<label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border-2 border-transparent has-[:checked]:border-primary has-[:checked]:bg-primary/5 cursor-pointer transition-all">
+											<input type="radio" name="displayOption" id="None" value="None" class="w-4 h-4 text-primary">
+											<div>
+												<p class="text-slate-900 dark:text-white text-sm font-medium">Hidden</p>
+												<p class="text-slate-500 dark:text-slate-400 text-xs">No panel</p>
+											</div>
+										</label>
+									</div>
+								</div>
+
+								<!-- Display Position -->
+								<div class="px-4 py-3">
+									<p class="text-slate-800 dark:text-white text-base font-medium leading-normal mb-3">Controller Position</p>
+									<div class="grid grid-cols-3 gap-2">
+										<label class="flex items-center justify-center p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border-2 border-transparent has-[:checked]:border-primary has-[:checked]:bg-primary/5 cursor-pointer transition-all">
+											<input type="radio" name="displayPosition" id="TopLeft" value="TopLeft" class="sr-only">
+											<span class="text-slate-700 dark:text-slate-300 text-sm font-medium">Top Left</span>
+										</label>
+										<label class="flex items-center justify-center p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border-2 border-transparent has-[:checked]:border-primary has-[:checked]:bg-primary/5 cursor-pointer transition-all">
+											<input type="radio" name="displayPosition" id="TopCenter" value="TopCenter" class="sr-only">
+											<span class="text-slate-700 dark:text-slate-300 text-sm font-medium">Top Center</span>
+										</label>
+										<label class="flex items-center justify-center p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border-2 border-transparent has-[:checked]:border-primary has-[:checked]:bg-primary/5 cursor-pointer transition-all">
+											<input type="radio" name="displayPosition" id="TopRight" value="TopRight" class="sr-only" checked>
+											<span class="text-slate-700 dark:text-slate-300 text-sm font-medium">Top Right</span>
+										</label>
+										<label class="flex items-center justify-center p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border-2 border-transparent has-[:checked]:border-primary has-[:checked]:bg-primary/5 cursor-pointer transition-all">
+											<input type="radio" name="displayPosition" id="BottomLeft" value="BottomLeft" class="sr-only">
+											<span class="text-slate-700 dark:text-slate-300 text-sm font-medium">Bottom Left</span>
+										</label>
+										<label class="flex items-center justify-center p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border-2 border-transparent has-[:checked]:border-primary has-[:checked]:bg-primary/5 cursor-pointer transition-all">
+											<input type="radio" name="displayPosition" id="BottomCenter" value="BottomCenter" class="sr-only">
+											<span class="text-slate-700 dark:text-slate-300 text-sm font-medium">Bottom Center</span>
+										</label>
+										<label class="flex items-center justify-center p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border-2 border-transparent has-[:checked]:border-primary has-[:checked]:bg-primary/5 cursor-pointer transition-all">
+											<input type="radio" name="displayPosition" id="BottomRight" value="BottomRight" class="sr-only">
+											<span class="text-slate-700 dark:text-slate-300 text-sm font-medium">Bottom Right</span>
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					<!-- Shortcuts Tab Content -->
+					<div id="shortcutsContent" class="tab-content-section" style="display: none;">
+						<div class="divide-y divide-slate-200 dark:divide-slate-800">
+							<!-- Keyboard Shortcuts Section -->
+							<div class="py-5">
+								<div class="px-4 pb-3 flex justify-between items-center">
+									<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">Keyboard Shortcuts</h2>
+									<button id="addShortcutBtn" class="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+										<span class="material-symbols-outlined text-base">add_circle</span>
+										<span>Add New Shortcut</span>
+									</button>
+								</div>
+								<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal px-4 mt-1 mb-5">Define keyboard shortcuts for quick access to playback controls. Click an input field and press your desired key combination.</p>
+								
+								<div class="flex flex-col divide-y divide-slate-200 dark:divide-slate-800">
+									<!-- Increase Speed Shortcut -->
+									<div class="flex flex-col p-4">
+										<div class="flex flex-wrap items-center justify-between gap-4">
+											<div class="flex items-start gap-4">
+												<div class="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+													<span class="material-symbols-outlined text-2xl">fast_forward</span>
+												</div>
+												<div class="flex flex-col">
+													<p class="text-base font-medium text-slate-900 dark:text-white">Increase Speed</p>
+													<p class="text-sm text-slate-500 dark:text-slate-400">Increase the current playback speed by 0.25x.</p>
+												</div>
+										</div>
+										<div class="relative w-full sm:w-auto">
+											<input id="fasterKeyInput" type="text" readonly class="w-full rounded-lg border-slate-300 bg-white py-2 pl-3 pr-10 text-sm text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-700 dark:placeholder:text-slate-500 sm:w-52 cursor-pointer" placeholder="Press keys..." />
+											<button id="clearFasterKey" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300">
+												<span class="material-symbols-outlined text-lg">close</span>
+											</button>
+										</div>
+										</div>
+										<!-- Conflict warning (hidden by default) -->
+										<div id="fasterConflict" class="mt-3 flex w-full flex-col gap-3 rounded-lg border border-red-500/50 bg-red-50 p-3 dark:border-red-500/30 dark:bg-red-500/10 sm:ml-14" style="display: none;">
+											<div class="flex items-center gap-2">
+												<span class="material-symbols-outlined text-lg text-red-600 dark:text-red-400">warning</span>
+												<p class="text-sm font-medium text-red-800 dark:text-red-300">Conflict Detected</p>
+											</div>
+											<p class="text-sm text-red-700 dark:text-red-400">This shortcut may conflict with browser defaults.</p>
+										</div>
+									</div>
+
+									<!-- Decrease Speed Shortcut -->
+									<div class="flex flex-col p-4">
+										<div class="flex flex-wrap items-center justify-between gap-4">
+											<div class="flex items-start gap-4">
+												<div class="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+													<span class="material-symbols-outlined text-2xl">fast_rewind</span>
+												</div>
+												<div class="flex flex-col">
+													<p class="text-base font-medium text-slate-900 dark:text-white">Decrease Speed</p>
+													<p class="text-sm text-slate-500 dark:text-slate-400">Decrease the current playback speed by 0.25x.</p>
+												</div>
+										</div>
+										<div class="relative w-full sm:w-auto">
+											<input id="slowerKeyInput" type="text" readonly class="w-full rounded-lg border-slate-300 bg-white py-2 pl-3 pr-10 text-sm text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-700 dark:placeholder:text-slate-500 sm:w-52 cursor-pointer" placeholder="Press keys..." />
+											<button id="clearSlowerKey" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300">
+												<span class="material-symbols-outlined text-lg">close</span>
+											</button>
+										</div>
+										</div>
+									</div>
+
+									<!-- Reset Speed Shortcut -->
+									<div class="flex flex-col p-4">
+										<div class="flex flex-wrap items-center justify-between gap-4">
+											<div class="flex items-start gap-4">
+												<div class="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+													<span class="material-symbols-outlined text-2xl">replay</span>
+												</div>
+												<div class="flex flex-col">
+													<p class="text-base font-medium text-slate-900 dark:text-white">Reset Speed</p>
+													<p class="text-sm text-slate-500 dark:text-slate-400">Reset playback speed to 1x.</p>
+												</div>
+										</div>
+										<div class="relative w-full sm:w-auto">
+											<input id="resetKeyInput" type="text" readonly class="w-full rounded-lg border-slate-300 bg-white py-2 pl-3 pr-10 text-sm text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-700 dark:placeholder:text-slate-500 sm:w-52 cursor-pointer" placeholder="Press keys..." />
+											<button id="clearResetKey" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300">
+												<span class="material-symbols-outlined text-lg">close</span>
+											</button>
+										</div>
+										</div>
+										<!-- Context-aware info -->
+										<div class="mt-3 flex w-full flex-col gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-800/50 sm:ml-14">
+											<div class="flex items-center gap-2">
+												<span class="material-symbols-outlined text-base text-slate-500 dark:text-slate-400">public</span>
+												<p class="text-sm font-medium text-slate-600 dark:text-slate-300">Context-aware: <span class="font-normal">Active only on youtube.com</span></p>
+											</div>
+										</div>
+									</div>
+
+									<!-- Toggle Controller Shortcut -->
+									<div class="flex flex-wrap items-center justify-between gap-4 p-4">
+										<div class="flex items-start gap-4">
+											<div class="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+												<span class="material-symbols-outlined text-2xl">visibility</span>
+											</div>
+											<div class="flex flex-col">
+												<p class="text-base font-medium text-slate-900 dark:text-white">Toggle Controller</p>
+												<p class="text-sm text-slate-500 dark:text-slate-400">Show or hide the speed controller on the video.</p>
+											</div>
+										</div>
+										<div class="relative w-full sm:w-auto">
+											<input class="w-full rounded-lg border-slate-300 bg-white py-2 pl-3 pr-10 text-sm text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-700 dark:placeholder:text-slate-500 sm:w-52" placeholder="Not set" type="text" readonly/>
+											<button class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300">
+												<span class="material-symbols-outlined text-lg">close</span>
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- Premium Shortcuts Section -->
+							<div class="py-5 pt-10">
+								<div class="px-4 pb-3 flex justify-between items-center">
+									<div class="flex items-center gap-3">
+										<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">Premium Shortcuts</h2>
+										<div class="flex items-center gap-1.5 rounded-full bg-yellow-400/20 px-2.5 py-1 text-xs font-semibold text-yellow-700 dark:bg-yellow-400/10 dark:text-yellow-400">
+											<span class="material-symbols-outlined !text-sm !font-semibold">workspace_premium</span>
+											<span>PRO</span>
+										</div>
+									</div>
+								</div>
+								<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal px-4 mt-1 mb-5">Unlock advanced control schemes with a Premium subscription for the ultimate power-user experience.</p>
+								
+								<div class="flex flex-col divide-y divide-slate-200 dark:divide-slate-800">
+									<!-- Skip Ad Shortcut (Premium) -->
+									<div class="flex flex-wrap items-center justify-between gap-4 p-4 opacity-50">
+										<div class="flex items-start gap-4">
+											<div class="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+												<span class="material-symbols-outlined text-2xl">skip_next</span>
+											</div>
+											<div class="flex flex-col">
+												<p class="text-base font-medium text-slate-900 dark:text-white">Skip Ad</p>
+												<p class="text-sm text-slate-500 dark:text-slate-400">Instantly skip the current video advertisement.</p>
+											</div>
+										</div>
+										<div class="relative w-full sm:w-auto">
+											<input class="w-full cursor-not-allowed rounded-lg border-slate-300 bg-white py-2 pl-3 pr-10 text-sm text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-700 dark:placeholder:text-slate-500 sm:w-52" disabled="" type="text" value="Shift + A"/>
+										</div>
+									</div>
+
+									<!-- Toggle Captions Shortcut (Premium) -->
+									<div class="flex flex-wrap items-center justify-between gap-4 p-4 opacity-50">
+										<div class="flex items-start gap-4">
+											<div class="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+												<span class="material-symbols-outlined text-2xl">closed_caption</span>
+											</div>
+											<div class="flex flex-col">
+												<p class="text-base font-medium text-slate-900 dark:text-white">Toggle Captions</p>
+												<p class="text-sm text-slate-500 dark:text-slate-400">Turn video captions on or off.</p>
+											</div>
+										</div>
+										<div class="relative w-full sm:w-auto">
+											<input class="w-full cursor-not-allowed rounded-lg border-slate-300 bg-white py-2 pl-3 pr-10 text-sm text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-700 dark:placeholder:text-slate-500 sm:w-52" disabled="" type="text" value="C"/>
+										</div>
+									</div>
+								</div>
+
+								<!-- Premium Upgrade CTA -->
+								<div class="mt-5 px-4">
+									<div class="flex flex-col items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-center dark:border-slate-700 dark:bg-slate-800/50">
+										<div class="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+											<span class="material-symbols-outlined text-3xl">lock_open</span>
+										</div>
+										<p class="mt-4 text-base font-bold text-slate-900 dark:text-white">Unlock Premium Shortcuts</p>
+										<p class="mt-1 max-w-sm text-sm text-slate-500 dark:text-slate-400">Get access to these and many more advanced features by upgrading your account.</p>
+										<button class="mt-5 flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors">
+											<span class="material-symbols-outlined text-base">workspace_premium</span>
+											<span>Upgrade to Pro</span>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>						<!-- Advanced Tab Content -->
+						<div id="advancedContent" class="tab-content-section" style="display: none;">
+							<div>
+								<!-- Playback Behavior Section -->
+								<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Playback Behavior</h2>
+								
+								<!-- Auto-skip intros -->
+								<div class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between">
+									<div class="flex items-center gap-4">
+										<div class="text-slate-600 dark:text-white flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 size-12">
+											<span class="material-symbols-outlined">skip_next</span>
+										</div>
+										<div class="flex flex-col justify-center">
+											<p class="text-slate-800 dark:text-white text-base font-medium leading-normal line-clamp-1">Auto-skip intros</p>
+											<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">Automatically skip video intros and recaps when detected.</p>
+										</div>
+									</div>
+									<div class="shrink-0">
+										<label class="toggle-switch relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none p-0.5 has-[:checked]:justify-end">
+											<div class="toggle-knob h-full w-[27px] rounded-full bg-white" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+											<input id="autoSkipIntros" class="invisible absolute" type="checkbox"/>
+										</label>
+									</div>
+								</div>
+
+								<!-- Force speed on all videos -->
+								<div class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between">
+									<div class="flex items-center gap-4">
+										<div class="text-slate-600 dark:text-white flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 size-12">
+											<span class="material-symbols-outlined">fast_forward</span>
+										</div>
+										<div class="flex flex-col justify-center">
+											<p class="text-slate-800 dark:text-white text-base font-medium leading-normal line-clamp-1">Force speed on all videos</p>
+											<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">Attempt to apply speed control to videos that may not be supported.</p>
+										</div>
+									</div>
+									<div class="shrink-0">
+										<label class="toggle-switch relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none p-0.5 has-[:checked]:justify-end">
+											<div class="toggle-knob h-full w-[27px] rounded-full bg-white" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+											<input id="forceSpeedAllVideos" class="invisible absolute" type="checkbox"/>
+										</label>
+									</div>
+								</div>
+
+								<!-- Data Management Section -->
+								<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Data Management</h2>
+								
+								<!-- Clear Per-Website Speed Settings -->
+								<div class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between">
+									<div class="flex flex-col justify-center">
+										<p class="text-slate-800 dark:text-white text-base font-medium leading-normal line-clamp-1">Clear Per-Website Speed Settings</p>
+										<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">Remove all saved playback speeds for individual websites.</p>
+									</div>
+									<button id="clearWebsiteData" class="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+										<span class="material-symbols-outlined text-base">delete</span>
+										<span>Clear Data</span>
+									</button>
+								</div>
+
+								<!-- Import/Export Configuration -->
+								<div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 px-4 min-h-[72px] py-3 justify-between">
+									<div class="flex flex-col justify-center">
+										<p class="text-slate-800 dark:text-white text-base font-medium leading-normal line-clamp-1">Configuration</p>
+										<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">Export your current settings to a file or import a configuration.</p>
+									</div>
+									<div class="flex gap-2 w-full sm:w-auto">
+										<button id="importConfig" class="flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-lg h-10 px-4 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+											<span class="material-symbols-outlined text-base">upload</span>
+											<span>Import</span>
+										</button>
+										<button id="exportConfig" class="flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-lg h-10 px-4 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+											<span class="material-symbols-outlined text-base">download</span>
+											<span>Export</span>
+										</button>
+									</div>
+								</div>
+
+								<!-- Developer Options Section -->
+								<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Developer Options</h2>
+								
+								<!-- Enable debug logging -->
+								<div class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between">
+									<div class="flex items-center gap-4">
+										<div class="text-slate-600 dark:text-white flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0 size-12">
+											<span class="material-symbols-outlined">bug_report</span>
+										</div>
+										<div class="flex flex-col justify-center">
+											<p class="text-slate-800 dark:text-white text-base font-medium leading-normal line-clamp-1">Enable debug logging</p>
+											<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">Output detailed logs to the console for troubleshooting.</p>
+										</div>
+									</div>
+									<div class="shrink-0">
+										<label class="toggle-switch relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none p-0.5 has-[:checked]:justify-end">
+											<div class="toggle-knob h-full w-[27px] rounded-full bg-white" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+											<input id="debugLogging" class="invisible absolute" type="checkbox"/>
+										</label>
+									</div>
+								</div>
+
+								<!-- Reset All Settings -->
+								<div class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between">
+									<div class="flex flex-col justify-center">
+										<p class="text-slate-800 dark:text-white text-base font-medium leading-normal line-clamp-1">Reset All Settings</p>
+										<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal line-clamp-2">Restore all settings to their original defaults. This action cannot be undone.</p>
+									</div>
+									<button id="restore" class="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-red-500/10 text-red-500 dark:bg-red-500/20 dark:text-red-400 text-sm font-bold hover:bg-red-500/20 dark:hover:bg-red-500/30 transition-colors">
+										<span class="material-symbols-outlined text-base">restart_alt</span>
+										<span>Reset to Defaults</span>
+									</button>
+								</div>
+
+								<!-- Footer -->
+								<div class="px-4 py-6 text-center text-sm text-slate-400 dark:text-slate-500 border-t border-slate-200 dark:border-slate-800 mt-2">
+									<p>Playback Speed Controller v1.0.0</p>
+									<div class="flex justify-center gap-4 mt-2">
+										<a class="hover:text-primary transition-colors cursor-pointer" href="https://github.com/cold-cofffeee/Youtube-Playback-Speed-Control/issues" target="_blank">Report a Bug</a>
+										<span>·</span>
+										<a class="hover:text-primary transition-colors cursor-pointer" href="https://github.com/cold-cofffeee/Youtube-Playback-Speed-Control/issues/new" target="_blank">Provide Feedback</a>
+										<span>·</span>
+										<a class="hover:text-primary transition-colors cursor-pointer" href="https://github.com/cold-cofffeee/Youtube-Playback-Speed-Control" target="_blank">View Source</a>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 
-	<!-- jQuery from CDN -->
-	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	<!-- Status Toast -->
+	<div id="status" class="fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg transition-all duration-300 transform translate-y-20 opacity-0" style="z-index: 9999;">
+		<span id="statusText"></span>
+	</div>
 
-	<!-- Bootstrap JS from CDN -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+	<style>
+		/* Custom slider styling */
+		.slider-thumb {
+			-webkit-appearance: none;
+			appearance: none;
+			background: transparent;
+			cursor: pointer;
+			width: 100%;
+		}
+
+		/* Webkit (Chrome, Safari, Edge) */
+		.slider-thumb::-webkit-slider-thumb {
+			-webkit-appearance: none;
+			appearance: none;
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			background: white;
+			cursor: pointer;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+			border: 2px solid #135bec;
+			margin-top: -7px; /* Centers thumb on track */
+		}
+
+		.slider-thumb::-webkit-slider-runnable-track {
+			width: 100%;
+			height: 6px;
+			border-radius: 3px;
+			background: linear-gradient(to right, #135bec 0%, #135bec var(--slider-progress, 33%), rgb(226 232 240) var(--slider-progress, 33%), rgb(226 232 240) 100%);
+		}
+
+		/* Firefox */
+		.slider-thumb::-moz-range-thumb {
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			background: white;
+			cursor: pointer;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+			border: 2px solid #135bec;
+		}
+
+		.slider-thumb::-moz-range-track {
+			width: 100%;
+			height: 6px;
+			border-radius: 3px;
+			background: linear-gradient(to right, #135bec 0%, #135bec var(--slider-progress, 33%), rgb(226 232 240) var(--slider-progress, 33%), rgb(226 232 240) 100%);
+		}
+
+		/* Dark mode */
+		.dark .slider-thumb::-webkit-slider-runnable-track {
+			background: linear-gradient(to right, #135bec 0%, #135bec var(--slider-progress, 33%), rgb(51 65 85) var(--slider-progress, 33%), rgb(51 65 85) 100%);
+		}
+
+		.dark .slider-thumb::-moz-range-track {
+			background: linear-gradient(to right, #135bec 0%, #135bec var(--slider-progress, 33%), rgb(51 65 85) var(--slider-progress, 33%), rgb(51 65 85) 100%);
+		}
+
+		/* Toggle switch improvements */
+		.toggle-switch {
+			transition: background-color 0.3s ease, justify-content 0.3s ease;
+		}
+
+		.toggle-switch .toggle-knob {
+			transition: transform 0.3s ease;
+		}
+
+		/* Unchecked state - gray background */
+		.toggle-switch {
+			background-color: rgb(226 232 240) !important;
+		}
+
+		.dark .toggle-switch {
+			background-color: rgb(51 65 85) !important;
+		}
+
+		/* Checked state - primary blue */
+		.toggle-switch:has(input:checked) {
+			background-color: #135bec !important;
+		}
+	</style>
 
 	<!-- Options Script -->
 	<script src="options.js"></script>
+
+	<!-- Tab Switching Script -->
+	<script>
+		// Tab switching functionality
+		document.getElementById('generalTab').addEventListener('click', (e) => {
+			e.preventDefault();
+			switchTab('general');
+		});
+		
+		document.getElementById('shortcutsTab').addEventListener('click', (e) => {
+			e.preventDefault();
+			switchTab('shortcuts');
+		});
+		
+		document.getElementById('advancedTab').addEventListener('click', (e) => {
+			e.preventDefault();
+			switchTab('advanced');
+		});
+
+		function switchTab(tabName) {
+			// Hide all content sections
+			document.getElementById('generalContent').style.display = 'none';
+			document.getElementById('shortcutsContent').style.display = 'none';
+			document.getElementById('advancedContent').style.display = 'none';
+
+			// Remove active class from all tabs
+			document.getElementById('generalTab').classList.remove('border-b-primary', 'text-slate-900', 'dark:text-white');
+			document.getElementById('generalTab').classList.add('border-b-transparent', 'text-slate-500', 'dark:text-slate-400');
+			
+			document.getElementById('shortcutsTab').classList.remove('border-b-primary', 'text-slate-900', 'dark:text-white');
+			document.getElementById('shortcutsTab').classList.add('border-b-transparent', 'text-slate-500', 'dark:text-slate-400');
+			
+			document.getElementById('advancedTab').classList.remove('border-b-primary', 'text-slate-900', 'dark:text-white');
+			document.getElementById('advancedTab').classList.add('border-b-transparent', 'text-slate-500', 'dark:text-slate-400');
+
+			// Show selected content and activate tab
+			if (tabName === 'general') {
+				document.getElementById('generalContent').style.display = 'block';
+				document.getElementById('generalTab').classList.add('border-b-primary', 'text-slate-900', 'dark:text-white');
+				document.getElementById('generalTab').classList.remove('border-b-transparent', 'text-slate-500', 'dark:text-slate-400');
+			} else if (tabName === 'shortcuts') {
+				document.getElementById('shortcutsContent').style.display = 'block';
+				document.getElementById('shortcutsTab').classList.add('border-b-primary', 'text-slate-900', 'dark:text-white');
+				document.getElementById('shortcutsTab').classList.remove('border-b-transparent', 'text-slate-500', 'dark:text-slate-400');
+			} else if (tabName === 'advanced') {
+				document.getElementById('advancedContent').style.display = 'block';
+				document.getElementById('advancedTab').classList.add('border-b-primary', 'text-slate-900', 'dark:text-white');
+				document.getElementById('advancedTab').classList.remove('border-b-transparent', 'text-slate-500', 'dark:text-slate-400');
+			}
+		}
+
+		// Speed slider updates
+		const speedSlider = document.getElementById('speedStep');
+		const speedDisplay = document.getElementById('speedStepDisplay');
+		const speedValue = document.getElementById('speedStepValue');
+
+		function updateSpeedDisplay() {
+			const value = parseFloat(speedSlider.value).toFixed(2);
+			const percentage = ((speedSlider.value - speedSlider.min) / (speedSlider.max - speedSlider.min)) * 100;
+			speedSlider.style.setProperty('--slider-progress', percentage + '%');
+			speedDisplay.textContent = value + 'x';
+			speedValue.textContent = value + 'x';
+		}
+
+		speedSlider.addEventListener('input', updateSpeedDisplay);
+		
+		// Initialize on load
+		document.addEventListener('DOMContentLoaded', () => {
+			updateSpeedDisplay();
+		});
+	</script>
 </body>
 </html>
 
