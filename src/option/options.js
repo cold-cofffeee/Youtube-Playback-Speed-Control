@@ -29,12 +29,18 @@ class OptionsManager {
 
   async init() {
     console.log('Options Manager initializing...');
-    await this.loadKeycodes();
-    this.setupEventListeners();
-    this.restoreOptions();
-    this.updateTimeSaved();
-    this.initTheme();
-    console.log('Options Manager initialized successfully');
+    try {
+      await this.loadKeycodes();
+      this.setupEventListeners();
+      this.restoreOptions();
+      this.updateTimeSaved();
+      this.initTheme();
+      // Initialize slider display
+      this.updateSpeedSliderDisplay();
+      console.log('Options Manager initialized successfully');
+    } catch (error) {
+      console.error('Error initializing Options Manager:', error);
+    }
   }
 
   initTheme() {
@@ -139,9 +145,31 @@ class OptionsManager {
   }
 
   setupEventListeners() {
-    document.getElementById('save').addEventListener('click', () => this.saveOptions());
-    document.getElementById('restore').addEventListener('click', () => this.restoreDefaults());
-    document.getElementById('speedStep').addEventListener('keypress', this.validateNumberInput);
+    console.log('Setting up event listeners...');
+    
+    // Save button
+    const saveBtn = document.getElementById('save');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => {
+        console.log('Save button clicked');
+        this.saveOptions();
+      });
+    }
+    
+    // Restore button
+    const restoreBtn = document.getElementById('restore');
+    if (restoreBtn) {
+      restoreBtn.addEventListener('click', () => {
+        console.log('Restore button clicked');
+        this.restoreDefaults();
+      });
+    }
+    
+    // Speed step input
+    const speedStep = document.getElementById('speedStep');
+    if (speedStep) {
+      speedStep.addEventListener('keypress', this.validateNumberInput);
+    }
     
     // Setup keyboard capture for shortcuts
     this.setupKeyboardCapture('fasterKeyInput', 'clearFasterKey');
@@ -149,39 +177,89 @@ class OptionsManager {
     this.setupKeyboardCapture('resetKeyInput', 'clearResetKey');
     
     // Theme toggle listeners
-    document.getElementById('lightModeBtn').addEventListener('click', () => {
-      this.applyTheme(false); // Set light mode
-      chrome.storage.sync.set({ darkMode: false });
-    });
-    document.getElementById('darkModeBtn').addEventListener('click', () => {
-      this.applyTheme(true); // Set dark mode
-      chrome.storage.sync.set({ darkMode: true });
-    });
+    const lightBtn = document.getElementById('lightModeBtn');
+    const darkBtn = document.getElementById('darkModeBtn');
+    
+    if (lightBtn) {
+      lightBtn.addEventListener('click', () => {
+        console.log('Light mode button clicked');
+        this.applyTheme(false);
+        chrome.storage.sync.set({ darkMode: false });
+      });
+    }
+    
+    if (darkBtn) {
+      darkBtn.addEventListener('click', () => {
+        console.log('Dark mode button clicked');
+        this.applyTheme(true);
+        chrome.storage.sync.set({ darkMode: true });
+      });
+    }
     
     // Advanced tab event listeners
-    document.getElementById('clearWebsiteData').addEventListener('click', () => this.clearWebsiteData());
-    document.getElementById('exportConfig').addEventListener('click', () => this.exportConfiguration());
-    document.getElementById('importConfig').addEventListener('click', () => this.importConfiguration());
+    const clearDataBtn = document.getElementById('clearWebsiteData');
+    const exportBtn = document.getElementById('exportConfig');
+    const importBtn = document.getElementById('importConfig');
+    
+    if (clearDataBtn) {
+      clearDataBtn.addEventListener('click', () => {
+        console.log('Clear website data button clicked');
+        this.clearWebsiteData();
+      });
+    }
+    
+    if (exportBtn) {
+      exportBtn.addEventListener('click', () => {
+        console.log('Export button clicked');
+        this.exportConfiguration();
+      });
+    }
+    
+    if (importBtn) {
+      importBtn.addEventListener('click', () => {
+        console.log('Import button clicked');
+        this.importConfiguration();
+      });
+    }
     
     // Tab switching functionality
-    document.getElementById('generalTab').addEventListener('click', (e) => {
-      e.preventDefault();
-      this.switchTab('general');
-    });
+    const generalTab = document.getElementById('generalTab');
+    const shortcutsTab = document.getElementById('shortcutsTab');
+    const advancedTab = document.getElementById('advancedTab');
     
-    document.getElementById('shortcutsTab').addEventListener('click', (e) => {
-      e.preventDefault();
-      this.switchTab('shortcuts');
-    });
+    if (generalTab) {
+      generalTab.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log('Switching to General tab');
+        this.switchTab('general');
+      });
+    }
     
-    document.getElementById('advancedTab').addEventListener('click', (e) => {
-      e.preventDefault();
-      this.switchTab('advanced');
-    });
+    if (shortcutsTab) {
+      shortcutsTab.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log('Switching to Shortcuts tab');
+        this.switchTab('shortcuts');
+      });
+    }
+    
+    if (advancedTab) {
+      advancedTab.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log('Switching to Advanced tab');
+        this.switchTab('advanced');
+      });
+    }
     
     // Speed slider updates
     const speedSlider = document.getElementById('speedStep');
-    speedSlider.addEventListener('input', () => this.updateSpeedSliderDisplay());
+    if (speedSlider) {
+      speedSlider.addEventListener('input', () => {
+        this.updateSpeedSliderDisplay();
+      });
+    }
+    
+    console.log('Event listeners setup complete');
   }
 
   validateNumberInput(event) {
@@ -474,11 +552,26 @@ class OptionsManager {
     const speedDisplay = document.getElementById('speedStepDisplay');
     const speedValue = document.getElementById('speedStepValue');
     
+    if (!speedSlider) {
+      console.error('Speed slider element not found');
+      return;
+    }
+    
     const value = parseFloat(speedSlider.value).toFixed(2);
-    const percentage = ((speedSlider.value - speedSlider.min) / (speedSlider.max - speedSlider.min)) * 100;
+    const min = parseFloat(speedSlider.min);
+    const max = parseFloat(speedSlider.max);
+    const percentage = ((parseFloat(speedSlider.value) - min) / (max - min)) * 100;
+    
     speedSlider.style.setProperty('--slider-progress', percentage + '%');
-    speedDisplay.textContent = value + 'x';
-    speedValue.textContent = value + 'x';
+    
+    if (speedDisplay) {
+      speedDisplay.textContent = value + 'x';
+    }
+    if (speedValue) {
+      speedValue.textContent = value + 'x';
+    }
+    
+    console.log('Slider updated:', value, 'Progress:', percentage + '%');
   }
 }
 
