@@ -162,6 +162,26 @@ class OptionsManager {
     document.getElementById('clearWebsiteData').addEventListener('click', () => this.clearWebsiteData());
     document.getElementById('exportConfig').addEventListener('click', () => this.exportConfiguration());
     document.getElementById('importConfig').addEventListener('click', () => this.importConfiguration());
+    
+    // Tab switching functionality
+    document.getElementById('generalTab').addEventListener('click', (e) => {
+      e.preventDefault();
+      this.switchTab('general');
+    });
+    
+    document.getElementById('shortcutsTab').addEventListener('click', (e) => {
+      e.preventDefault();
+      this.switchTab('shortcuts');
+    });
+    
+    document.getElementById('advancedTab').addEventListener('click', (e) => {
+      e.preventDefault();
+      this.switchTab('advanced');
+    });
+    
+    // Speed slider updates
+    const speedSlider = document.getElementById('speedStep');
+    speedSlider.addEventListener('input', () => this.updateSpeedSliderDisplay());
   }
 
   validateNumberInput(event) {
@@ -411,6 +431,54 @@ class OptionsManager {
       reader.readAsText(file);
     };
     input.click();
+  }
+
+  switchTab(tabName) {
+    // Hide all content sections
+    document.getElementById('generalContent').style.display = 'none';
+    document.getElementById('shortcutsContent').style.display = 'none';
+    document.getElementById('advancedContent').style.display = 'none';
+
+    // Remove active class from all tabs
+    const generalTab = document.getElementById('generalTab');
+    const shortcutsTab = document.getElementById('shortcutsTab');
+    const advancedTab = document.getElementById('advancedTab');
+
+    generalTab.classList.remove('border-b-primary', 'text-slate-900', 'dark:text-white');
+    generalTab.classList.add('border-b-transparent', 'text-slate-500', 'dark:text-slate-400');
+    
+    shortcutsTab.classList.remove('border-b-primary', 'text-slate-900', 'dark:text-white');
+    shortcutsTab.classList.add('border-b-transparent', 'text-slate-500', 'dark:text-slate-400');
+    
+    advancedTab.classList.remove('border-b-primary', 'text-slate-900', 'dark:text-white');
+    advancedTab.classList.add('border-b-transparent', 'text-slate-500', 'dark:text-slate-400');
+
+    // Show selected content and activate tab
+    if (tabName === 'general') {
+      document.getElementById('generalContent').style.display = 'block';
+      generalTab.classList.add('border-b-primary', 'text-slate-900', 'dark:text-white');
+      generalTab.classList.remove('border-b-transparent', 'text-slate-500', 'dark:text-slate-400');
+    } else if (tabName === 'shortcuts') {
+      document.getElementById('shortcutsContent').style.display = 'block';
+      shortcutsTab.classList.add('border-b-primary', 'text-slate-900', 'dark:text-white');
+      shortcutsTab.classList.remove('border-b-transparent', 'text-slate-500', 'dark:text-slate-400');
+    } else if (tabName === 'advanced') {
+      document.getElementById('advancedContent').style.display = 'block';
+      advancedTab.classList.add('border-b-primary', 'text-slate-900', 'dark:text-white');
+      advancedTab.classList.remove('border-b-transparent', 'text-slate-500', 'dark:text-slate-400');
+    }
+  }
+
+  updateSpeedSliderDisplay() {
+    const speedSlider = document.getElementById('speedStep');
+    const speedDisplay = document.getElementById('speedStepDisplay');
+    const speedValue = document.getElementById('speedStepValue');
+    
+    const value = parseFloat(speedSlider.value).toFixed(2);
+    const percentage = ((speedSlider.value - speedSlider.min) / (speedSlider.max - speedSlider.min)) * 100;
+    speedSlider.style.setProperty('--slider-progress', percentage + '%');
+    speedDisplay.textContent = value + 'x';
+    speedValue.textContent = value + 'x';
   }
 }
 
